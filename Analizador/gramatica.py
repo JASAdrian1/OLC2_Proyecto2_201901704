@@ -1,3 +1,7 @@
+from Compilador.Expresiones.primitivo import Primitivo
+from Compilador.Expresiones.Operaciones.aritmetica import Aritmetica
+
+noNode = 0
 
 
 # Palabras reservadas
@@ -111,6 +115,7 @@ t_PUNTO= r'\.'
 t_GUIONBAJO = r'_'
 t_ORMATCH = r'\|'
 t_AMPERSAND = r'&'
+
 
 
 # Expresiones regulares
@@ -244,6 +249,8 @@ def p_instruccion(t):
                     | remove_vector PYC
                     | llamada_funcion PYC
     '''
+    t[0] = t[1]
+    return t
 
 # ======================INSTRUCCION PARA SOLO UNA LINEA MATCH====================================
 def p_instrucciones_match(t):
@@ -285,6 +292,8 @@ def p_declaracion(t):
                     | LET lista_id IGUAL expresion
     '''
     print("Reconociendo declaracion", t)
+    t[0] = t[4]
+    return t
 
 
 def p_asignacion(t):
@@ -475,6 +484,8 @@ def p_funcion(t):  # ----PENDIENTE------
                 | FN ID PARA PARC LLAVEA instrucciones LLAVEC
                 | FN ID PARA PARC MENOS MAYORQUE tipo LLAVEA instrucciones LLAVEC
     '''
+    t[0] = t[6]
+    return t
 
 def p_lista_parametros(t):  # ----PENDIENTE------
     '''lista_parametros : lista_parametros COMA parametro
@@ -535,6 +546,9 @@ def p_expresion_aritmeticas(t):
                 | expresion MOD expresion
                 | MENOS expresion %prec UMENOS
     '''
+    if len(t) == 4:
+        t[0] = Aritmetica(t.slice[0],getNoNodo(),t[1],t[3],False, t[2])
+    return t
 
 
 def p_expresion_logica(t):
@@ -565,6 +579,8 @@ def p_expresion_primitivos(t):
                 | TRUE
                 | FALSE
     '''
+    t[0] = Primitivo(t.slice[1],getNoNodo())
+    return t
 
 def p_expresion_to_string(t):
     ''' to_string : expresion PUNTO TO GUIONBAJO STRINGE PARA PARC
@@ -648,6 +664,10 @@ import Analizador.ply.yacc as yacc
 
 parser = yacc.yacc()
 
+def getNoNodo():
+    global noNode
+    noNode = noNode + 1
+    return noNode
 
 def analizar_entrada(input):
     # print(input)

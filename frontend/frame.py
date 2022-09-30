@@ -4,9 +4,7 @@ from tkinter import ttk,messagebox
 from PIL import ImageTk, Image
 
 from Analizador.gramatica import analizar_entrada
-
-
-
+from Compilador.TablaSimbolo.TablaSimbolos3d import TablaSimbolos3d
 
 
 class Ventana:
@@ -56,6 +54,12 @@ class Ventana:
         self.text_console.delete("1.0",tk.END)
         input = self.text_editor.get(0.1, tk.END)
         nodos = analizar_entrada(input)
+
+        ts = TablaSimbolos3d(None)
+        for nodo in nodos:
+            for nod in nodo:
+                print(nod)
+                nod.crearCodigo3d(ts)
 
 
 
