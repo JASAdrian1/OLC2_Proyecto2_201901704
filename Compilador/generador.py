@@ -2,7 +2,7 @@
 temporal = 0
 etiqueta = 0
 posHeap = 0
-
+codigoGenerado = ""
 
 def nuevoTemporal():
     global temporal
@@ -15,13 +15,27 @@ def nuevaEtiqueta():
     return "L"+str(etiqueta)
 
 
-def soltar(etiqueta):
+def soltarEtiqueta(etiqueta):
+    cadena = ""
     for eti in etiqueta:
-        print(eti,":")
+        cadena += eti + ":\n"
+    return cadena
 
-
-def agregarEtiqueta(etiqueta1, etiqueta2):
+def unirEtiquetas(etiqueta1, etiqueta2):
     listaEtiquetas = etiqueta1
-    listaEtiquetas.append(etiqueta2)
+    for eti in etiqueta2:
+        listaEtiquetas.append(eti)
     return listaEtiquetas
 
+
+def mostrarEtiquetas(etiV, etiF):
+    expresion = ""
+    expresion += "#Etiquetas verdaderas\n"
+    expresion += soltarEtiqueta(etiV)
+    expresion += "#Etiquetas falsas\n"
+    expresion += soltarEtiqueta(etiF)
+    return expresion
+
+def generarCodigo(cadena):
+    global codigoGenerado
+    codigoGenerado+=cadena+"\n"

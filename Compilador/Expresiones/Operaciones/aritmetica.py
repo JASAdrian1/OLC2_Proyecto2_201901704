@@ -27,7 +27,7 @@ class Aritmetica(Nodo):
         elif self.signo == "^":
             self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + " ^ " + str(self.exp2.ref)
 
-        print(self.expresion)
+        print(self.expresion, end="")
 
     def crearTabla(self,ts):
         pass
