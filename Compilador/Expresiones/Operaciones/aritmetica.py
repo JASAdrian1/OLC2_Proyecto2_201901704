@@ -13,19 +13,13 @@ class Aritmetica(Nodo):
     def crearCodigo3d(self,ts):
         self.exp1.crearCodigo3d(ts)
         self.exp2.crearCodigo3d(ts)
-        self.expresion += self.exp1.expresion + "\n"
-        self.expresion += self.exp2.expresion + "\n"
+        if len(self.exp1.expresion) >1:
+            self.expresion += self.exp1.expresion
+        if len(self.exp2.expresion) >1:
+            self.expresion += self.exp2.expresion
         self.ref = nuevoTemporal()
-        if self.signo == "+":
-            self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + " + " + str(self.exp2.ref)
-        elif self.signo == "-":
-            self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + " - " + str(self.exp2.ref)
-        elif self.signo == "/":
-            self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + " / " + str(self.exp2.ref)
-        elif self.signo == "*":
-            self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + " * " + str(self.exp2.ref)
-        elif self.signo == "^":
-            self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + " ^ " + str(self.exp2.ref)
+        if self.signo == "+" or self.signo == "-" or self.signo == "*" or self.signo == "/" or self.signo == "^":
+            self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + self.signo + str(self.exp2.ref) + "\n"
 
         print(self.expresion, end="")
 

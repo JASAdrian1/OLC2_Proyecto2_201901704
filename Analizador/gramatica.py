@@ -6,6 +6,9 @@ from Compilador.Expresiones.condicion import Condicion
 from Compilador.Expresiones.condicion_relacional import Condicion_Relacional
 from Compilador.Expresiones.condicion_logica import Condicion_Logica
 from Compilador.Instrucciones.sentencia_if import Sentencia_If
+from Compilador.Instrucciones.declaracion import Declaracion
+from Compilador.Instrucciones.sentencia_match import Sentencia_Match
+from Compilador.Instrucciones.brazo_match import Brazo_Match
 
 
 from Compilador import generador
@@ -319,7 +322,7 @@ def p_declaracion(t):
         nuevoSimbolo = Simbolo(t[2],t[4],desplazamiento)
         sup.put(t[2],nuevoSimbolo)
         desplazamiento += 1
-        t[0] = nuevoSimbolo
+        t[0] = Declaracion(t.slice[0],getNoNodo(),t[2],t[6])
     return t
 
 
@@ -438,48 +441,19 @@ def p_lista_expresion(t):
 # ------------------------SENTENCIAS DE CONTROL-----------------------------------
 # ================================================================================
 def p_sentencia_if(t):
-    '''sentencia_if : IF condicion LLAVEA instrucciones LLAVEC
-                    | IF condicion LLAVEA instrucciones LLAVEC ELSE  sentencia_if
-                    | IF condicion LLAVEA instrucciones LLAVEC ELSE LLAVEA instrucciones LLAVEC
+    '''sentencia_if : IF expresion LLAVEA instrucciones LLAVEC
+                    | IF expresion LLAVEA instrucciones LLAVEC ELSE  sentencia_if
+                    | IF expresion LLAVEA instrucciones LLAVEC ELSE LLAVEA instrucciones LLAVEC
     '''
     if len(t) == 6:
         t[0] = Sentencia_If(t.slice[0],getNoNodo(),t[2],t[4],None)
+    elif len(t) == 8:
+        t[0] = Sentencia_If(t.slice[0],getNoNodo(),t[2],t[4],[t[7]])
+    elif len(t) == 10:
+        t[0] = Sentencia_If(t.slice[0],getNoNodo(),t[2],t[4],t[8])
     return t
 
-def p_condicion_relacional(t):
-    ''' condicion : expresion IGUALIGUAL expresion
-                | expresion DIFERENTE expresion
-                | expresion MENORIGUAL expresion
-                | expresion MENORQUE expresion
-                | expresion MAYORIGUAL expresion
-                | expresion MAYORQUE expresion
-    '''
-    #t[0] = Condicion(generador.nuevaEtiqueta(),generador.nuevaEtiqueta())
-    #cadenaCondicion = str(t[1].ref)+" "+" "+t[2]+" "+str(t[3].ref)
-    #t[0].expresion += "if " + cadenaCondicion + " then "+t[0].etiVerdaderas[0]+"\n"
-    #t[0].expresion += "goto "+t[0].etiFalsas[0]+"\n"
-    #generador.generarCodigo(t[0].expresion)
 
-    t[0] = Condicion_Relacional(t.slice[0],getNoNodo(),t[1],t[3],t[2])
-    return t
-
-def p_condicion_logica(t):
-    ''' condicion : NOT condicion %prec NOT
-                | condicion AND condicion
-                | condicion OR condicion
-                | PARA condicion PARC
-                | TRUE
-                | FALSE
-    '''
-    if t[1] == "(":
-        t[0] = t[2]
-    elif t[1] == "!":
-        t[0] = Condicion_Logica(t.slice[0],getNoNodo(),t[2],None,"!")
-    elif len(t)>2:
-        t[0] = Condicion_Logica(t.slice[0],getNoNodo(),t[1],t[3],t[2])
-    elif len(t) == 2:
-        t[0] = Condicion_Logica(t.slice[0],getNoNodo(),t[1],None,None)
-    return t
 
 #def p_marc_and(t):
 #    'marc_and :'
@@ -490,10 +464,16 @@ def p_condicion_logica(t):
 
 def p_sentencia_match(t):
     ''' sentencia_match : MATCH expresion LLAVEA lista_casos_match LLAVEC
-                        | MATCH expresion LLAVEA lista_casos_match GUIONBAJO IGUAL MAYORQUE instrucciones_match LLAVEC
-                        | MATCH expresion LLAVEA lista_casos_match GUIONBAJO IGUAL MAYORQUE instruccion_match COMA LLAVEC
+                        | MATCH expresion LLAVEA lista_casos_match GUIONBAJO IGUAL MAYORQUE instruccion_match LLAVEC
+                        | MATCH expresion LLAVEA lista_casos_match GUIONBAJO IGUAL MAYORQUE instrucciones_match COMA LLAVEC
     '''
-
+    if len(t) == 6:
+        t[0] = Sentencia_Match(t.slice[0],getNoNodo(), t[2], t[4], None, t.lexer.lineno, 1)
+    elif len(t) == 10:
+        t[0] = Sentencia_Match(t.slice[0],getNoNodo(), t[2], t[4], [t[8]], t.lexer.lineno, 1)
+    else:
+        t[0] = Sentencia_Match(t.slice[0],getNoNodo(), t[2], t[4], t[8], t.lexer.lineno, 1)
+    return t
 
 def p_lista_casos_match(t):
     ''' lista_casos_match : lista_casos_match caso_match
@@ -512,7 +492,11 @@ def p_casos_match(t):
     ''' caso_match : opciones_match IGUAL MAYORQUE LLAVEA instrucciones LLAVEC
                     | opciones_match IGUAL MAYORQUE instruccion_match COMA
     '''
-
+    if len(t) == 7:
+        t[0] = Brazo_Match(t.slice[0],getNoNodo(), t[1], t[5], t.lexer.lineno, 1)
+    else:
+        t[0] = Brazo_Match(t.slice[0],getNoNodo(), t[1], [t[4]], t.lexer.lineno, 1)
+    return t
 
 def p_opciones_match(t):
     ''' opciones_match : opciones_match ORMATCH expresion
@@ -622,28 +606,44 @@ def p_expresion_aritmeticas(t):
     '''
     if len(t) == 4:
         t[0] = Aritmetica(t.slice[0],getNoNodo(),t[1],t[3],False, t[2])
-        t[0].ref = generador.nuevoTemporal()
-        t[0].expresion = str(t[0].ref) + " = " + str(t[1].ref) + t[2] + str(t[3].ref)
-        generador.generarCodigo(t[0].expresion)
     return t
 
 
-#def p_expresion_logica(t):
-#    '''expresion : NOT condicion %prec NOT
-#                | expresion AND expresion
-#                | expresion OR expresion
-#    '''
-
-
-def p_expresion_relacional(t):
-    '''expresion : expresion IGUALIGUAL expresion
+def p_condicion_relacional(t):
+    ''' expresion : expresion IGUALIGUAL expresion
                 | expresion DIFERENTE expresion
                 | expresion MENORIGUAL expresion
                 | expresion MENORQUE expresion
                 | expresion MAYORIGUAL expresion
                 | expresion MAYORQUE expresion
-
     '''
+    #t[0] = Condicion(generador.nuevaEtiqueta(),generador.nuevaEtiqueta())
+    #cadenaCondicion = str(t[1].ref)+" "+" "+t[2]+" "+str(t[3].ref)
+    #t[0].expresion += "if " + cadenaCondicion + " then "+t[0].etiVerdaderas[0]+"\n"
+    #t[0].expresion += "goto "+t[0].etiFalsas[0]+"\n"
+    #generador.generarCodigo(t[0].expresion)
+
+    t[0] = Condicion_Relacional(t.slice[0],getNoNodo(),t[1],t[3],t[2])
+    return t
+
+def p_condicion_logica(t):
+    ''' expresion : NOT expresion %prec NOT
+                | expresion AND expresion
+                | expresion OR expresion
+                | PARA expresion PARC
+                | TRUE
+                | FALSE
+    '''
+    if t[1] == "(":
+        t[0] = t[2]
+    elif t[1] == "!":
+        t[0] = Condicion_Logica(t.slice[0],getNoNodo(),t[2],None,"!")
+    elif len(t)>2:
+        t[0] = Condicion_Logica(t.slice[0],getNoNodo(),t[1],t[3],t[2])
+    elif len(t) == 2:
+        t[0] = Condicion_Logica(t.slice[0],getNoNodo(),t[1],None,None)
+    return t
+
 
 
 def p_expresion_primitivos(t):
@@ -652,8 +652,6 @@ def p_expresion_primitivos(t):
                 | CARACTER
                 | CADENA
                 | to_string
-                | TRUE
-                | FALSE
     '''
     t[0] = Primitivo(t.slice[1],getNoNodo())
     t[0].ref = t[1]
