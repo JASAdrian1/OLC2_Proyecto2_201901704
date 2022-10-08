@@ -26,8 +26,13 @@ class Brazo_Match(Nodo):
         self.expresion += generador.soltarEtiqueta(etiV)
         self.expresion += "//AQUI SE EJECUTAN LAS INSTRUCCIONES DENTRO DEL BRAZO\n"
         for instruccion in self.instrucciones:
-            instruccion.crearCodigo3d(ts)
-            self.expresion += instruccion.expresion
+            exp_instruccion = instruccion.crearCodigo3d(ts)
+            if exp_instruccion == "break":
+                self.expresion += "goto " + ts.listaEtiquetas[-1] + "\n"
+            elif exp_instruccion == "continue":
+                self.expresion += "goto " + ts.listaEtiquetas[-2] + "\n"
+            else:
+                self.expresion += exp_instruccion
 
         self.expresion += "goto " + etiSalida + "\n"
         return self.expresion

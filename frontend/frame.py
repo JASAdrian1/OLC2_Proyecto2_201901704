@@ -4,7 +4,7 @@ from tkinter import ttk,messagebox
 from PIL import ImageTk, Image
 
 from Analizador.gramatica import analizar_entrada
-from Compilador.TablaSimbolo.TablaSimbolos3d import TablaSimbolos3d
+from Compilador.Entorno.entorno import Entorno
 from Compilador import generador
 
 
@@ -56,13 +56,14 @@ class Ventana:
         input = self.text_editor.get(0.1, tk.END)
         nodos = analizar_entrada(input)
 
-        ts = TablaSimbolos3d(None)
+        sup = Entorno("global", None)
         #print(generador.codigoGenerado)
         #self.text_console.insert("0.1", generador.codigoGenerado)
 
         #self.text_console.insert("0.1", nodos.crearCodigo3d(ts))
+
         for nodo in nodos:
-            self.text_console.insert("0.1", nodo.crearCodigo3d(ts))
+            self.text_console.insert("0.1", nodo.crearCodigo3d(sup))
 
 
 

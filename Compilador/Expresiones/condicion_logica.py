@@ -15,6 +15,9 @@ class Condicion_Logica(Nodo):
         pass
 
     def crearCodigo3d(self,ts):
+        self.etiV = []
+        self.etiF = []
+
         if self.exp2 is not None:
             self.exp1.crearCodigo3d(ts)
             self.exp2.crearCodigo3d(ts)

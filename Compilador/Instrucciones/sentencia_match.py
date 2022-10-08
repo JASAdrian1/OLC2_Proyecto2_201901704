@@ -17,6 +17,9 @@ class Sentencia_Match(Nodo):
         pass
 
     def crearCodigo3d(self,ts):
+        self.etiF = []
+        self.etiSalida = []
+
         self.condicion.crearCodigo3d(ts)
         self.etiF.append(generador.nuevaEtiqueta())
         self.etiSalida.append(generador.nuevaEtiqueta())
@@ -33,8 +36,11 @@ class Sentencia_Match(Nodo):
         if self.brazoDefault is not None:
             self.expresion += "//CREANDO CODIGO DE INSTRUCCIONES DE BRAZO DEFAULT \n"
             for instruccion in self.brazoDefault:
-                if instruccion.crearCodigo3d(ts) is not None:
-                    self.expresion += instruccion.expresion
+                exp_instruccion = instruccion.crearCodigo3d(ts)
+                if exp_instruccion == "break":
+                    self.expresion += "goto " + ts.listaEtiquetas[-1] + "\n"
+                else:
+                    self.expresion += exp_instruccion
 
 
         self.expresion += generador.soltarEtiqueta(self.etiSalida)

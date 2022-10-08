@@ -15,6 +15,9 @@ class Condicion_Relacional(Nodo):
         pass
 
     def crearCodigo3d(self,ts):
+        self.etiV = []
+        self.etiF = []
+
         self.etiV.append(generador.nuevaEtiqueta())
         self.etiF.append(generador.nuevaEtiqueta())
         cadenaCondicion = str(self.exp1.ref) + " " + self.signo + " " + str(self.exp2.ref)

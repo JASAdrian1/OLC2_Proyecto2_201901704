@@ -1,3 +1,5 @@
+from Compilador.Entorno import entorno
+from Compilador.Entorno.simbolo import Simbolo
 from Compilador.Interfaces.nodo import Nodo
 from Compilador import generador
 
@@ -9,7 +11,11 @@ class Declaracion(Nodo):
         self.valor = valor
 
     def crearTabla(self,ts):
-        pass
+        for id in self.id:
+            nuevoSimbolo = Simbolo(id, self.valor, entorno.desplazamiento)
+            ts.put(id, nuevoSimbolo)
+            entorno.desplazamiento += 1
 
     def crearCodigo3d(self,ts):
-        pass
+        self.expresion += "//Realizando declaracion"+"\n"
+        return self.expresion

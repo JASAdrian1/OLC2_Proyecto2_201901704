@@ -1,3 +1,4 @@
+from Compilador.Entorno import entorno
 from Compilador.Expresiones.primitivo import Primitivo
 from Compilador.Expresiones.Operaciones.aritmetica import Aritmetica
 from Compilador.Entorno.entorno import Entorno, mostrarSimbolos
@@ -9,13 +10,16 @@ from Compilador.Instrucciones.sentencia_if import Sentencia_If
 from Compilador.Instrucciones.declaracion import Declaracion
 from Compilador.Instrucciones.sentencia_match import Sentencia_Match
 from Compilador.Instrucciones.brazo_match import Brazo_Match
+from Compilador.Instrucciones.sentencia_while import Sentencia_While
+from Compilador.Instrucciones.sentencia_loop import Sentencia_Loop
+from Compilador.Instrucciones.sentencia_break import Sentencia_Break
+from Compilador.Instrucciones.sentencia_continue import Sentencia_Continue
 
 
 from Compilador import generador
 
 noNode = 0
-desplazamiento = 0
-sup = Entorno("global",None)
+
 
 # Palabras reservadas
 reserved = {
@@ -235,8 +239,7 @@ def p_marc_sup(t):
     'marc_sup : '
     global sup
     sup = Entorno("global")
-    global desplazamiento
-    desplazamiento = 0
+    entorno.desplazamiento = 0
     generador.codigoGenerado = ""
     generador.temporal = 0
     generador.etiqueta = 0
@@ -273,7 +276,12 @@ def p_instruccion(t):
                     | remove_vector PYC
                     | llamada_funcion PYC
     '''
-    t[0] = t[1]
+    if t[1] == "break":
+        t[0] = Sentencia_Break(t.slice[0],getNoNodo(),t.lexer.lineno,1)
+    elif t[1] == "continue":
+        t[0] = Sentencia_Continue(t.slice[0],getNoNodo(),t.lexer.lineno,1)
+    else:
+        t[0] = t[1]
     return t
 
 # ======================INSTRUCCION PARA SOLO UNA LINEA MATCH====================================
@@ -319,9 +327,7 @@ def p_declaracion(t):
     global sup
     print("Reconociendo declaracion", t)
     if len(t) == 7:
-        nuevoSimbolo = Simbolo(t[2],t[4],desplazamiento)
-        sup.put(t[2],nuevoSimbolo)
-        desplazamiento += 1
+
         t[0] = Declaracion(t.slice[0],getNoNodo(),t[2],t[6])
     return t
 
@@ -517,11 +523,16 @@ def p_opciones_match(t):
 def p_loop(t):
     ''' bucle_loop : LOOP LLAVEA instrucciones LLAVEC
     '''
+    t[0] = Sentencia_Loop(t.slice[0], getNoNodo(), t[3],t.lexer.lineno,1)
+    return t
 
 #CICLO WHILE
 def p_while(t):
     ''' bucle_while : WHILE expresion LLAVEA instrucciones LLAVEC
     '''
+    t[0] = Sentencia_While(t.slice[0], getNoNodo(),t[2],t[4], t.lexer.lineno, 1)
+    return t
+
 
 #CICLO FOR
 def p_for(t):

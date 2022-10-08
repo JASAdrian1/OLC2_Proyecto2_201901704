@@ -1,11 +1,14 @@
 
 
+desplazamiento = 0
+
 
 class Entorno:
     def __init__(self, nombre, entornoAnterior=None):
         self.nombre = nombre
         self.tablaSimbolos = {}
         self.entornoAnterior = entornoAnterior
+        self.listaEtiquetas = []
 
 
     def put(self,listaid, simbolo):
