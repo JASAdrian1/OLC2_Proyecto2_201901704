@@ -47,10 +47,13 @@ class Condicion_Logica(Nodo):
                 self.etiV.append(generador.nuevaEtiqueta())
                 self.etiF.append(generador.nuevaEtiqueta())
                 if self.exp1 == "true":
-                    self.expresion += "goto " + self.etiV[0]+"\n"
+                    self.expresion += generador.generarGoto(self.etiV[0])
                 elif self.exp1 == "false":
-                    print("HAHAHAH")
-                    self.expresion += "goto " + self.etiF[0] + "\n"
+                    #print("HAHAHAH")
+                    self.expresion += generador.generarGoto(self.etiF[0])
 
         print(self.expresion)
         return self.expresion
+
+    def calcTam(self):
+        return 1

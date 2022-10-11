@@ -1,3 +1,4 @@
+from Compilador.Entorno import entorno
 from Compilador.Interfaces.nodo import Nodo
 from Compilador import generador
 
@@ -12,9 +13,18 @@ class Sentencia_Match(Nodo):
         self.etiSalida = []
         self.linea = linea
         self.columna = columna
+        self.entornoDefault = entorno.Entorno("default")
 
     def crearTabla(self,ts):
-        pass
+        self.entornoDefault.entornoAnterior = ts
+        self.entornoDefault.crearListaNombresEntorno()
+
+        for brazo in self.listaBrazo:
+            brazo.crearTabla(ts)
+
+        if self.brazoDefault is not None:
+            for instruccion in self.brazoDefault:
+                instruccion.crearTabla(self.entornoDefault)
 
     def crearCodigo3d(self,ts):
         self.etiF = []
@@ -36,13 +46,21 @@ class Sentencia_Match(Nodo):
         if self.brazoDefault is not None:
             self.expresion += "//CREANDO CODIGO DE INSTRUCCIONES DE BRAZO DEFAULT \n"
             for instruccion in self.brazoDefault:
-                exp_instruccion = instruccion.crearCodigo3d(ts)
+                exp_instruccion = instruccion.crearCodigo3d(self.entornoDefault)
                 if exp_instruccion == "break":
-                    self.expresion += "goto " + ts.listaEtiquetas[-1] + "\n"
+                    self.expresion += "goto " + self.entornoDefault.listaEtiquetas[-1] + "\n"
                 else:
                     self.expresion += exp_instruccion
 
 
         self.expresion += generador.soltarEtiqueta(self.etiSalida)
         return self.expresion
+
+    def calcTam(self):
+        tam = 0
+        for brazo in self.listaBrazo:
+            tam += brazo.calcTam()
+        for instruccion in self.brazoDefault:
+            tam += instruccion.calcTam()
+        return tam
     

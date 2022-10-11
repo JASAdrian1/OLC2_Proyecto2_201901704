@@ -1,3 +1,4 @@
+from Compilador.Entorno import entorno
 from Compilador.Interfaces.nodo import Nodo
 from Compilador import generador
 
@@ -10,9 +11,14 @@ class Sentencia_Loop(Nodo):
         self.columna = columna
         self.etiInicio = []
         self.etiSalida = []
+        self.entorno = entorno.Entorno("loop")
 
     def crearTabla(self,ts):
-        pass
+        self.entorno.entornoAnterior = ts
+        self.entorno.crearListaNombresEntorno()
+
+        for instruccion in self.instrucciones:
+            instruccion.crearTabla(self.entorno)
 
     def crearCodigo3d(self,ts):
         self.etiInicio = []
@@ -21,13 +27,13 @@ class Sentencia_Loop(Nodo):
         self.etiInicio.append(generador.nuevaEtiqueta())
         self.etiSalida.append(generador.nuevaEtiqueta())
 
-        ts.listaEtiquetas.append(self.etiInicio[0])
-        ts.listaEtiquetas.append(self.etiSalida[0])
+        self.entorno.listaEtiquetas.append(self.etiInicio[0])
+        self.entorno.listaEtiquetas.append(self.etiSalida[0])
 
         self.expresion += generador.soltarEtiqueta(self.etiInicio)
         if self.instrucciones is not None:
             for instruccion in self.instrucciones:
-                expresion_instruccion = instruccion.crearCodigo3d(ts)
+                expresion_instruccion = instruccion.crearCodigo3d(self.entorno)
                 if expresion_instruccion == "break":
                     self.expresion += "goto " + self.etiSalida[0] + "\n"
                 elif expresion_instruccion == "continue":
@@ -39,8 +45,14 @@ class Sentencia_Loop(Nodo):
         self.expresion += generador.soltarEtiqueta(self.etiSalida)
 
         # Se remueven las dos etiquetas que se agregaro a la listas de etiquetas
-        del ts.listaEtiquetas[-1]
-        del ts.listaEtiquetas[-1]
+        del self.entorno.listaEtiquetas[-1]
+        del self.entorno.listaEtiquetas[-1]
 
         return self.expresion
 
+
+    def calcTam(self):
+        tam = 0
+        for instruccion in self.instrucciones:
+            tam += instruccion.calcTam()
+        return tam

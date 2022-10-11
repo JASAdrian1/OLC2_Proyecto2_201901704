@@ -17,6 +17,11 @@ class Nodo(ABC):
     def crearCodigo3d(self,ts):
         pass
 
+    @abstractmethod
     def crearTabla(self,ts):
+        pass
+
+    @abstractmethod
+    def calcTam(self):
         pass
 

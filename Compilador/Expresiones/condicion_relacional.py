@@ -21,7 +21,10 @@ class Condicion_Relacional(Nodo):
         self.etiV.append(generador.nuevaEtiqueta())
         self.etiF.append(generador.nuevaEtiqueta())
         cadenaCondicion = str(self.exp1.ref) + " " + self.signo + " " + str(self.exp2.ref)
-        self.expresion += "if (" + cadenaCondicion + ") goto " + self.etiV[0] + "\n"
-        self.expresion += "goto " + self.etiF[0] + "\n"
+        self.expresion += "if (" + cadenaCondicion + ") goto " + self.etiV[0] + ";\n"
+        self.expresion += generador.generarGoto(self.etiF[0])
         print(self.expresion)
         return self.expresion
+
+    def calcTam(self):
+        return 1

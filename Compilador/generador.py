@@ -1,13 +1,12 @@
 
 temporal = 0
 etiqueta = 0
-posHeap = 0
 codigoGenerado = ""
 
 def nuevoTemporal():
     global temporal
     temporal += 1
-    return "T"+str(temporal)
+    return "t"+str(temporal)
 
 def nuevaEtiqueta():
     global etiqueta
@@ -28,6 +27,9 @@ def unirEtiquetas(etiqueta1, etiqueta2):
     return listaEtiquetas
 
 
+def generarGoto(eti):
+    return "goto "+eti+";\n"
+
 def mostrarEtiquetas(etiV, etiF):
     expresion = ""
     expresion += "#Etiquetas verdaderas\n"
@@ -39,3 +41,11 @@ def mostrarEtiquetas(etiV, etiF):
 def generarCodigo(cadena):
     global codigoGenerado
     codigoGenerado+=cadena+"\n"
+
+
+def generarListaTemporales():
+    lista = "float t0"
+    for i in range(1,temporal+1):
+        lista += ",t"+str(i)
+    lista += ";"
+    return lista

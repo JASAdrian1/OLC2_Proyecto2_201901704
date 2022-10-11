@@ -4,7 +4,8 @@ from tkinter import ttk,messagebox
 from PIL import ImageTk, Image
 
 from Analizador.gramatica import analizar_entrada
-from Compilador.Entorno.entorno import Entorno
+from Compilador.Entorno import entorno
+from Compilador.Entorno.entorno import Entorno,mostrarSimbolos,tabla_simbolos_global,mostrarTablaGlobal
 from Compilador import generador
 
 
@@ -57,13 +58,28 @@ class Ventana:
         nodos = analizar_entrada(input)
 
         sup = Entorno("global", None)
+        entorno.tabla_simbolos_global = []
         #print(generador.codigoGenerado)
         #self.text_console.insert("0.1", generador.codigoGenerado)
 
         #self.text_console.insert("0.1", nodos.crearCodigo3d(ts))
 
         for nodo in nodos:
-            self.text_console.insert("0.1", nodo.crearCodigo3d(sup))
+            nodo.crearTabla(sup)
+        mostrarTablaGlobal()
+        #mostrarSimbolos(sup)
+        header = "#include <stdio.h>\n"
+        header += "float stack[100000];\n"
+        header += "float heap[100000];\n"
+        header += "float P;\n"
+        header += "float H;\n"
+        codigo3d = header
+        for nodo in nodos:
+            codigo3d += nodo.crearCodigo3d(sup)
+
+        header += generador.generarListaTemporales() + "\n"
+        codigo3d = header + codigo3d
+        self.text_console.insert("0.1", codigo3d)
 
 
 

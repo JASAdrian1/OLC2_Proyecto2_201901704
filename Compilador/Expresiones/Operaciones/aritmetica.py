@@ -18,10 +18,12 @@ class Aritmetica(Nodo):
         if len(self.exp2.expresion) >1:
             self.expresion += self.exp2.expresion
         self.ref = nuevoTemporal()
+        signo = " "+self.signo+" "  #variable creada unicamente para agregar espacios al signo
         if self.signo == "+" or self.signo == "-" or self.signo == "*" or self.signo == "/" or self.signo == "^":
-            self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + self.signo + str(self.exp2.ref) + "\n"
+            self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + signo + str(self.exp2.ref) + ";\n"
 
-        print(self.expresion, end="")
+        #print(self.expresion, end="")
+        return self.expresion
 
     def crearTabla(self,ts):
         pass

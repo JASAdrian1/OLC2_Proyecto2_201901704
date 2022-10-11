@@ -1,4 +1,5 @@
 from Compilador.Entorno import entorno
+from Compilador.TablaSimbolo.tipo import Tipo
 from Compilador.Expresiones.primitivo import Primitivo
 from Compilador.Expresiones.Operaciones.aritmetica import Aritmetica
 from Compilador.Entorno.entorno import Entorno, mostrarSimbolos
@@ -14,6 +15,7 @@ from Compilador.Instrucciones.sentencia_while import Sentencia_While
 from Compilador.Instrucciones.sentencia_loop import Sentencia_Loop
 from Compilador.Instrucciones.sentencia_break import Sentencia_Break
 from Compilador.Instrucciones.sentencia_continue import Sentencia_Continue
+from Compilador.Instrucciones.funcion import Funcion
 
 
 from Compilador import generador
@@ -327,8 +329,13 @@ def p_declaracion(t):
     global sup
     print("Reconociendo declaracion", t)
     if len(t) == 7:
-
-        t[0] = Declaracion(t.slice[0],getNoNodo(),t[2],t[6])
+        t[0] = Declaracion(t.slice[0],getNoNodo(),t[4],t[6],t[2],False,t.lexer.lineno,1)
+    elif len(t) == 5:
+        t[0] = Declaracion(t.slice[0],getNoNodo(),None,t[4],t[2],False,t.lexer.lineno,1)
+    elif len(t) == 6:
+        t[0] = Declaracion(t.slice[0],getNoNodo(),None,t[5],t[3],True,t.lexer.lineno,1)
+    elif len(t) == 8:
+        t[0] = Declaracion(t.slice[0], getNoNodo(),t[5],t[7],t[3],True,t.lexer.lineno,1)
     return t
 
 
@@ -360,7 +367,7 @@ def p_tipo(t):
             | STR
             | USIZE
     '''
-    t[0] = t[1]
+    t[0] = Tipo(t[1].upper())
     return t
 
 # ------------------------------ARREGLOS------------------------------------------
@@ -552,6 +559,17 @@ def p_funcion(t):  # ----PENDIENTE------
                 | FN ID PARA PARC LLAVEA instrucciones LLAVEC
                 | FN ID PARA PARC MENOS MAYORQUE tipo LLAVEA instrucciones LLAVEC
     '''
+    if len(t) == 9:     #<--- Primera expresion de la regla funcion
+        t[0] = Funcion(t.slice[0],getNoNodo(),t[2],None,t[4],t[7],t.lexer.lineno,1)
+    elif len(t) == 12:  #<--- Segunda expresion de la regla funcion
+        t[0] = Funcion(t.slice[0],getNoNodo(),t[2],t[8],t[4],t[10],t.lexer.lineno,1)
+    elif len(t) == 8:   #<--- Tercera expresion de la regla funcion
+        t[0] = Funcion(t.slice[0],getNoNodo(),t[2],None,None,t[6],t.lexer.lineno,1)
+    else:               #<--- Cuarta expresion de la regla funcion
+        t[0] = Funcion(t.slice[0],getNoNodo(),t[2],t[7],None,t[9],t.lexer.lineno,1)
+    return t
+
+
 
 def p_lista_parametros(t):  # ----PENDIENTE------
     '''lista_parametros : lista_parametros COMA parametro
@@ -664,9 +682,7 @@ def p_expresion_primitivos(t):
                 | CADENA
                 | to_string
     '''
-    t[0] = Primitivo(t.slice[1],getNoNodo())
-    t[0].ref = t[1]
-    t[0].expresion = ""
+    t[0] = Primitivo(t.slice[1],getNoNodo(),t[1])
     return t
 
 def p_expresion_to_string(t):

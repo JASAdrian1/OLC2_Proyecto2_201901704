@@ -15,3 +15,6 @@ class Sentencia_Break(Nodo):
     def crearCodigo3d(self,ts):
         return "break"
         pass
+
+    def calcTam(self):
+        return 0

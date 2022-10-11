@@ -14,4 +14,6 @@ class Sentencia_Continue(Nodo):
 
     def crearCodigo3d(self,ts):
         return "continue"
-        pass
+
+    def calcTam(self):
+        return 0
