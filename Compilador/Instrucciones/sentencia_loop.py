@@ -35,13 +35,13 @@ class Sentencia_Loop(Nodo):
             for instruccion in self.instrucciones:
                 expresion_instruccion = instruccion.crearCodigo3d(self.entorno)
                 if expresion_instruccion == "break":
-                    self.expresion += "goto " + self.etiSalida[0] + "\n"
+                    self.expresion += generador.generarGoto(self.etiSalida[0])
                 elif expresion_instruccion == "continue":
-                    self.expresion += "goto " + self.etiInicio[0] + "\n"
+                    self.expresion += generador.generarGoto(self.etiInicio[0])
                 else:
                     self.expresion += expresion_instruccion
 
-        self.expresion += "goto "+ self.etiInicio[0]+"\n"
+        self.expresion += generador.generarGoto(self.etiInicio[0])
         self.expresion += generador.soltarEtiqueta(self.etiSalida)
 
         # Se remueven las dos etiquetas que se agregaro a la listas de etiquetas

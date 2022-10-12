@@ -7,8 +7,10 @@ from Compilador.Entorno.simbolo import Simbolo
 from Compilador.Expresiones.condicion import Condicion
 from Compilador.Expresiones.condicion_relacional import Condicion_Relacional
 from Compilador.Expresiones.condicion_logica import Condicion_Logica
+from Compilador.Expresiones.identificador import Identificador
 from Compilador.Instrucciones.sentencia_if import Sentencia_If
 from Compilador.Instrucciones.declaracion import Declaracion
+from Compilador.Instrucciones.asignacion import Asignacion
 from Compilador.Instrucciones.sentencia_match import Sentencia_Match
 from Compilador.Instrucciones.brazo_match import Brazo_Match
 from Compilador.Instrucciones.sentencia_while import Sentencia_While
@@ -343,6 +345,9 @@ def p_asignacion(t):
     '''asignacion : ID IGUAL expresion
                     | ID dimensiones_acceso_arreglo IGUAL expresion
     '''
+    if len(t) == 4:
+        t[0] = Asignacion(t.slice[0],getNoNodo(),t[1],t[3],t.lexer.lineno,1)
+    return t
 
 
 def p_lista_id(t):
@@ -693,6 +698,8 @@ def p_expresion_to_string(t):
 def p_expresion_id(t):
     ''' expresion : ID
     '''
+    t[0] = Identificador(t.slice[0],getNoNodo(),t[1],t.lexer.lineno,1)
+    return t
 
 
 def p_expresion_absoluto(t):

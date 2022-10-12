@@ -41,7 +41,7 @@ class Funcion(Nodo):
         for instruccion in self.listaInstrucciones:
             exp_instruccion = instruccion.crearCodigo3d(self.entorno)
 
-            self.expresion += " " + exp_instruccion
+            self.expresion += exp_instruccion
         self.expresion += "}"
         return self.expresion
 

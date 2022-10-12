@@ -47,9 +47,9 @@ class Sentencia_While(Nodo):
             for instruccion in self.instrucciones:
                 exp_instruccion = instruccion.crearCodigo3d(self.entorno)
                 if exp_instruccion == "break":
-                    self.expresion += "goto " + self.etiquetaSalida[0] + "\n"
+                    self.expresion += generador.generarGoto(self.etiquetaSalida[0])
                 elif exp_instruccion == "continue":
-                    self.expresion += "goto " + self.etiquetaInicio[0] + "\n"
+                    self.expresion += generador.generarGoto(self.etiquetaInicio[0])
                 else:
                     self.expresion += exp_instruccion
 
