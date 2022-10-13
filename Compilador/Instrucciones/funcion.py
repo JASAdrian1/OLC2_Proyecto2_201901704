@@ -24,6 +24,11 @@ class Funcion(Nodo):
         print("id: ",self.id)
         self.entorno.put(self.id,nuevaFuncion)
         entorno.tabla_simbolos_global.append(nuevaFuncion)
+        #Se insertan en la tabla de simbolos los parametros si es que posee
+        if self.listaParametros is not None:
+            for parametro in self.listaParametros:
+                parametro.crearTabla(self.entorno)
+        #Se insertan en la tabla de simbolos las declaraciones que se encuntren en las instrucciones de la funcion
         for instruccion in self.listaInstrucciones:
             print("instruccion (funcion): ",instruccion)
             instruccion.crearTabla(self.entorno)
@@ -40,6 +45,7 @@ class Funcion(Nodo):
             elif self.tipoFuncion.tipo_enum == tipo.F64:
                 tipoFuncion = "float"
 
+
         self.expresion += tipoFuncion + " " + self.id + "() {\n"
         for instruccion in self.listaInstrucciones:
             exp_instruccion = instruccion.crearCodigo3d(self.entorno)
@@ -52,6 +58,9 @@ class Funcion(Nodo):
     def calcTam(self):
         #print("CALCULANDO TAMAÑO DE FUNCION")
         tam = 0
+        if self.listaParametros is not None:
+            for parametro in self.listaParametros:
+                tam += parametro.calcTam()
         for instruccion in self.listaInstrucciones:
             tam += instruccion.calcTam()
         #print(tam)

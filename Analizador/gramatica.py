@@ -18,7 +18,9 @@ from Compilador.Instrucciones.sentencia_loop import Sentencia_Loop
 from Compilador.Instrucciones.sentencia_break import Sentencia_Break
 from Compilador.Instrucciones.sentencia_continue import Sentencia_Continue
 from Compilador.Instrucciones.funcion import Funcion
+from Compilador.Expresiones.parametro_funcion import Parametro_funcion
 from Compilador.Instrucciones.llamada_funcion_ins import Llamada_funcion_ins
+from Compilador.Expresiones.parametro_llamada import Parametro_llamada
 from Compilador.Instrucciones.println import Println
 
 
@@ -601,6 +603,13 @@ def p_parametro(t):  # ----PENDIENTE------
                 | ID DOSP AMPERSAND MUT tipo_parametro
                 | ID DOSP MUT tipo_parametro
     '''
+    if len(t) == 4:
+        t[0] = Parametro_funcion(t.slice[0],getNoNodo(),t[1],t[3],False,False,t.lexer.lineno,1)
+    elif len(t) == 6:
+        t[0] = Parametro_funcion(t.slice[0],getNoNodo(),t[1],t[5],True,True,t.lexer.lineno,1)
+    else:
+        t[0] = Parametro_funcion(t.slice[0],getNoNodo(),t[1],t[4],True,False,t.lexer.lineno,1)
+    return t
 
 
 def p_tipo_parametro(t):
@@ -615,7 +624,9 @@ def p_tipo_parametro(t):
                         | CORA tipo CORC
                         | CORA tipo_parametro PYC ENTERO CORC
     '''
-
+    if len(t) == 2:
+        t[0] = Tipo(t[1].upper())
+    return t
 
 #---------------FUNCION COMO INSTRUCCION----------------------------------
 
@@ -797,6 +808,10 @@ def p_parametro_llamada(t):
     ''' parametro_llamada : AMPERSAND MUT expresion
                           | expresion
     '''
+    if len(t) == 2:
+        t[0] = Parametro_llamada(t.slice[0],getNoNodo(),t[1],False,False)
+    else:
+        t[0] = Parametro_llamada(t.slice[0],getNoNodo(),t[3],True,True)
 
 def p_error(t):
     print("Error sintáctico en '%s'" % t.value, "Linea: %d" % t.lexer.lineno)

@@ -12,7 +12,9 @@ class Parametro_llamada(Nodo):
         pass
 
     def crearCodigo3d(self,ts):
-        pass
+        self.expresion += self.valor.crearCodigo3d(ts)
+        self.ref = self.valor.ref
+        return self.expresion
 
     def calcTam(self):
         return 0
