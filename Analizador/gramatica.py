@@ -20,7 +20,9 @@ from Compilador.Instrucciones.sentencia_continue import Sentencia_Continue
 from Compilador.Instrucciones.funcion import Funcion
 from Compilador.Expresiones.parametro_funcion import Parametro_funcion
 from Compilador.Instrucciones.llamada_funcion_ins import Llamada_funcion_ins
+from Compilador.Expresiones.llamada_funcion_exp import Llamada_funcion_exp
 from Compilador.Expresiones.parametro_llamada import Parametro_llamada
+from Compilador.Instrucciones.sentencia_return import Sentencia_Return
 from Compilador.Instrucciones.println import Println
 
 
@@ -277,7 +279,7 @@ def p_instruccion(t):
                     | bucle_for
                     | BREAK PYC
                     | CONTINUE PYC
-                    | RETURN expresion
+                    | RETURN PYC
                     | RETURN expresion PYC
                     | push_vector PYC
                     | insertar_en_vector PYC
@@ -285,9 +287,14 @@ def p_instruccion(t):
                     | llamada_funcion PYC
     '''
     if t[1] == "break":
-        t[0] = Sentencia_Break(t.slice[0],getNoNodo(),t.lexer.lineno,1)
+        t[0] = Sentencia_Break(t.slice[1],getNoNodo(),t.lexer.lineno,1)
     elif t[1] == "continue":
-        t[0] = Sentencia_Continue(t.slice[0],getNoNodo(),t.lexer.lineno,1)
+        t[0] = Sentencia_Continue(t.slice[1],getNoNodo(),t.lexer.lineno,1)
+    elif t[1] == "return":
+        if len(t) == 3:
+            t[0] = Sentencia_Return(t.slice[1],getNoNodo(),None,t.lexer.lineno,1)
+        else:
+            t[0] = Sentencia_Return(t.slice[1],getNoNodo(),t[2],t.lexer.lineno,1)
     else:
         t[0] = t[1]
     return t
@@ -791,6 +798,11 @@ def p_llamada_funcion_expresion(t):
     ''' expresion : ID PARA lista_parametros_llamada PARC
                 | ID PARA PARC
     '''
+    if len(t) == 4:
+        t[0] = Llamada_funcion_exp(t.slice[0],getNoNodo(),t[1],None,t.lexer.lineno,1)
+    else:
+        t[0] = Llamada_funcion_exp(t.slice[0],getNoNodo(),t[1],t[3],t.lexer.lineno,1)
+    return t
 
 def p_parametros_funcion_llamada(t):
     ''' lista_parametros_llamada : lista_parametros_llamada COMA parametro_llamada

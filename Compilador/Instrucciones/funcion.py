@@ -24,15 +24,29 @@ class Funcion(Nodo):
         print("id: ",self.id)
         self.entorno.put(self.id,nuevaFuncion)
         entorno.tabla_simbolos_global.append(nuevaFuncion)
+
+        # Primero se inserta el return por lo que se verifica si la funcion cuenta con el return
+        for instruccion in self.listaInstrucciones:
+            if instruccion.nombre == "RETURN":
+                instruccion.crearTabla(self.entorno)
+                break
+
+
         #Se insertan en la tabla de simbolos los parametros si es que posee
         if self.listaParametros is not None:
             for parametro in self.listaParametros:
                 parametro.crearTabla(self.entorno)
-        #Se insertan en la tabla de simbolos las declaraciones que se encuntren en las instrucciones de la funcion
+
+
+        #***Se insertan en la tabla de simbolos las declaraciones que se encuntren en las instrucciones de la funcion***
         for instruccion in self.listaInstrucciones:
-            print("instruccion (funcion): ",instruccion)
-            instruccion.crearTabla(self.entorno)
+            if instruccion.nombre != "RETURN":
+                print("instruccion (funcion): ",instruccion)
+                instruccion.crearTabla(self.entorno)
+
         self.entorno.get(self.id,"funcion").size = self.calcTam()
+
+
 
     def crearCodigo3d(self,ts):
         tipoFuncion = ""
@@ -49,10 +63,13 @@ class Funcion(Nodo):
         self.expresion += tipoFuncion + " " + self.id + "() {\n"
         for instruccion in self.listaInstrucciones:
             exp_instruccion = instruccion.crearCodigo3d(self.entorno)
-
             self.expresion += exp_instruccion
+
+        if self.id == "main":
+            self.expresion += "return 0;\n"
         self.expresion += "}\n"
         return self.expresion
+
 
 
     def calcTam(self):
