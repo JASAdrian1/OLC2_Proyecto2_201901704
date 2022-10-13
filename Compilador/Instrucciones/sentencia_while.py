@@ -30,12 +30,12 @@ class Sentencia_While(Nodo):
         self.etiquetaSalida = []
 
         self.etiquetaInicio.append(generador.nuevaEtiqueta())
-        self.condicion.crearCodigo3d(ts)
 
+        self.condicion.crearCodigo3d(ts)
         self.etiquetaSalida = (self.condicion.etiF)
         self.etiV = self.condicion.etiV
 
-
+        #Lista de etiquetas que se usan en las instrucciones break, continue, return 
         self.entorno.listaEtiquetas.append(self.etiquetaInicio[0])
         self.entorno.listaEtiquetas.append(self.etiquetaSalida[0])
 
@@ -52,6 +52,7 @@ class Sentencia_While(Nodo):
                     self.expresion += generador.generarGoto(self.etiquetaInicio[0])
                 else:
                     self.expresion += exp_instruccion
+            self.expresion += generador.generarGoto(self.etiquetaInicio[0])
 
         #Se remueven las dos etiquetas que se agregaro a la listas de etiquetas
         del self.entorno.listaEtiquetas[-1]

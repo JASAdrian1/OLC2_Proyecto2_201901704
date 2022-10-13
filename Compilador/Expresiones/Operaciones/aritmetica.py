@@ -22,9 +22,16 @@ class Aritmetica(Nodo):
         if self.signo == "+" or self.signo == "-" or self.signo == "*" or self.signo == "/" or self.signo == "^":
             self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + signo + str(self.exp2.ref) + ";\n"
 
+        #***ASIGNACION DE TIPO PROVISIONAL (FALTA QUE REALIZAR LA VALIDACION QUE LOS TIPOS DE LAS DOS EXPRESIONES COINCIDAN)
+        self.tipo = self.exp1.tipo
+        #print("tipo (expresion): ",self.tipo.tipo_string)
         #print(self.expresion, end="")
         return self.expresion
 
     def crearTabla(self,ts):
         pass
+
+
+    def calcTam(self):
+        return 0
 

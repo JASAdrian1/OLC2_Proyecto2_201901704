@@ -1,5 +1,6 @@
 from Compilador import generador
 from Compilador.Interfaces.nodo import Nodo
+from Compilador.TablaSimbolo.tipo import Tipo
 
 
 class Identificador(Nodo):
@@ -16,7 +17,8 @@ class Identificador(Nodo):
 
     def crearCodigo3d(self,ts):
         simbolo = ts.get(self.id,"variable")
-        print(simbolo.direccionRel)
+        self.tipo = Tipo(simbolo.tipo_dato.tipo_string)
+        #print("/*",self.tipo.tipo_string)
 
         tempPosId = generador.nuevoTemporal()
         self.expresion += tempPosId + " = P + "+str(simbolo.direccionRel) + ";\n"

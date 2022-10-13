@@ -10,6 +10,7 @@ class Entorno:
         self.tablaSimbolos = {}
         self.entornoAnterior = entornoAnterior
         self.listaEtiquetas = []
+        self.funcionEnEjecucion = ""
 
         ent = entornoAnterior
         if ent is not None:
@@ -50,7 +51,10 @@ class Entorno:
 
     def getUltimaPosStack(self):
         if len(self.tablaSimbolos)>0:
-            return list(self.tablaSimbolos.values())[-1].direccionRel + 1
+            if list(self.tablaSimbolos.values())[-1].direccionRel == -1:
+                return 1
+            else:
+                return list(self.tablaSimbolos.values())[-1].direccionRel + 1
         else:
             if self.entornoAnterior is not None:
                 ent = self.entornoAnterior
@@ -113,6 +117,16 @@ def mostrarTablaGlobal():
         print("DireccionRel: ", simb.direccionRel, end="\t")
         print("DireccionAbs: ",simb.direccionAbs, end="\t")
         print("Entorno: ", ','.join(simb.entorno))
+
+
+def getFuncionTablaGlobal(id):
+    for simb in tabla_simbolos_global:
+        if simb.id == id:
+            if simb.tipo_simbolo == "funcion":
+                return simb
+
+    print("Funcion no encontrada en la tabla global")
+    return None
 
 
 def getHeapLibre():

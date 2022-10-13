@@ -18,17 +18,20 @@ class Funcion(Nodo):
 
     def crearTabla(self,ts):
         self.entorno.crearListaNombresEntorno()
+        self.entorno.funcionEnEjecucion = self.id
 
         nuevaFuncion = Simbolo(self.id,self.tipoFuncion,self.tipoSimbolo,0,ts.nombre,-1,entorno.getHeapLibre())
         print("id: ",self.id)
         self.entorno.put(self.id,nuevaFuncion)
         entorno.tabla_simbolos_global.append(nuevaFuncion)
         for instruccion in self.listaInstrucciones:
+            print("instruccion (funcion): ",instruccion)
             instruccion.crearTabla(self.entorno)
         self.entorno.get(self.id,"funcion").size = self.calcTam()
 
     def crearCodigo3d(self,ts):
         tipoFuncion = ""
+
         if self.tipoFuncion is None:
             tipoFuncion = "void"
         else:
@@ -42,7 +45,7 @@ class Funcion(Nodo):
             exp_instruccion = instruccion.crearCodigo3d(self.entorno)
 
             self.expresion += exp_instruccion
-        self.expresion += "}"
+        self.expresion += "}\n"
         return self.expresion
 
 

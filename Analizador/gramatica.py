@@ -18,6 +18,8 @@ from Compilador.Instrucciones.sentencia_loop import Sentencia_Loop
 from Compilador.Instrucciones.sentencia_break import Sentencia_Break
 from Compilador.Instrucciones.sentencia_continue import Sentencia_Continue
 from Compilador.Instrucciones.funcion import Funcion
+from Compilador.Instrucciones.llamada_funcion_ins import Llamada_funcion_ins
+from Compilador.Instrucciones.println import Println
 
 
 from Compilador import generador
@@ -441,6 +443,11 @@ def p_impresion(t):
     '''impresion : PRINTLN NOT PARA CADENA PARC
                 | PRINTLN NOT PARA CADENA COMA lista_expresiones PARC
     '''
+    if len(t) == 6:
+        t[0] = Println(t.slice[0],getNoNodo(),t[4],None,t.lexer.lineno,1)
+    elif len(t) == 8:
+        t[0] = Println(t.slice[0],getNoNodo(),t[4],t[6],t.lexer.lineno,1)
+    return t
 
 
 def p_lista_expresion(t):
@@ -616,6 +623,11 @@ def p_llamada_funcion(t):
     ''' llamada_funcion : ID PARA lista_parametros_llamada PARC
                         | ID PARA PARC
     '''
+    if len(t) == 4:
+        t[0] = Llamada_funcion_ins(t.slice[0],getNoNodo(),t[1],None,t.lexer.lineno,1)
+    else:
+        t[0] = Llamada_funcion_ins(t.slice[0],getNoNodo(),t[1],t[3],t.lexer.lineno,1)
+    return t
 
 # ===================PRDUCCIONES PARA EXPRESIONES==========================
 # ==========================================================================
@@ -687,7 +699,28 @@ def p_expresion_primitivos(t):
                 | CADENA
                 | to_string
     '''
-    t[0] = Primitivo(t.slice[1],getNoNodo(),t[1])
+    if type(t[1]) == float:
+        tipo = "F64"
+    elif type(t[1]) == int:
+        tipo = "I64"
+    elif t[1] == "true" or t[1] == "false":
+        tipo = "BOOL"
+    elif type(t[1]) == str:
+        if t[1].find("'") != -1:
+            #print("HOLLLALALAL")
+            tipo = "CHAR"
+        else:
+            tipo = "STR"
+    #elif isinstance(t[1],ToString):
+    #    tipo = "STRING"
+    else:
+        tipo = "ERROR"
+    valor = t[1]
+    if tipo == "CHAR" or tipo == "STR":
+        valor = valor[1:-1]
+    elif tipo == "STRING":
+        valor = t[1].valor
+    t[0] = Primitivo(t.slice[1],getNoNodo(),valor,tipo,t.lexer.lineno,1)
     return t
 
 def p_expresion_to_string(t):

@@ -1,5 +1,6 @@
 from Compilador.Interfaces.nodo import Nodo
 from Compilador import generador
+from Compilador.TablaSimbolo.tipo import Tipo
 
 
 class Condicion_Logica(Nodo):
@@ -7,6 +8,7 @@ class Condicion_Logica(Nodo):
         super().__init__(token,idnodo)
         self.exp1 = exp1
         self.exp2 = exp2
+        self.tipo = Tipo("BOOL")
         self.etiV = []
         self.etiF = []
         self.signo = signo

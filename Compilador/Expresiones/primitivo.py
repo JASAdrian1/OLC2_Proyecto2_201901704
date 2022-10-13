@@ -1,21 +1,15 @@
 from Compilador.Interfaces.nodo import Nodo
-from Compilador.TablaSimbolo.tipo import tipo
+from Compilador.TablaSimbolo.tipo import tipo, Tipo
 
 
 class Primitivo(Nodo):
-    def __init__(self,token,idNodo,valor):
+    def __init__(self,token,idNodo,valor,tipo,fila,columna):
         super().__init__(token,idNodo)
         self.ref = valor
         self.nombre = valor
+        self.valor = valor
         self.expresion = ""
-        if self.tipo == "ENTERO":
-            self.tipo = tipo.I64
-        elif self.tipo == "DECIMAL":
-            self.tipo = tipo.F64
-        elif self.tipo == "CARACTER":
-            self.tipo = tipo.CHAR
-        elif self.tipo == "BOOLEAN":
-            self.tipo = tipo.BOOL
+        self.tipo = Tipo(tipo)
         print("///",self.tipo)
 
 

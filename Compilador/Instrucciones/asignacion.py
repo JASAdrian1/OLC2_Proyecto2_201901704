@@ -16,11 +16,11 @@ class Asignacion(Nodo):
     def crearCodigo3d(self,ts):
         simbolo = ts.get(self.id, "variable")
 
+        self.nuevoValor.crearCodigo3d(ts)  # Se ejecuta el codigo 3d del nuevo valor que se le asignara a la varable
+        self.expresion += self.nuevoValor.expresion  # Se concatena el codigo del nuevo valor al codigo que llevamos
+
         tempPosSimb = generador.nuevoTemporal()
         self.expresion += tempPosSimb + " = P + " + str(simbolo.direccionRel) + ";\n"
-
-        self.nuevoValor.crearCodigo3d(ts)    #Se ejecuta el codigo 3d del nuevo valor que se le asignara a la varable
-        self.expresion += self.nuevoValor.expresion     #Se concatena el codigo del nuevo valor al codigo que llevamos
         self.expresion += "stack[(int)"+tempPosSimb + "] = " + str(self.nuevoValor.ref) + ";\n"
 
         return self.expresion

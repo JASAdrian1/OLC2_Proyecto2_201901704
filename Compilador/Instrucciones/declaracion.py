@@ -15,6 +15,7 @@ class Declaracion(Nodo):
         self.fila = fila
         self.columna = columna
         self.tipoSimbolo = "variable"
+        #print("Tipo (declaracion): ",self.tipo.tipo_string)
 
     def crearTabla(self,ts):
         for id in self.listaid:
