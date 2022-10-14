@@ -136,3 +136,8 @@ def getHeapLibre():
     return heap
 
 
+def aumentarHeap():
+    global posHeap
+    posHeap += 1
+
+

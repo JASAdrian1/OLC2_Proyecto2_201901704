@@ -20,7 +20,8 @@ class Declaracion(Nodo):
     def crearTabla(self,ts):
         for id in self.listaid:
             print(self.tipo.tipo_enum)
-            if(self.tipo.tipo_enum != tipo.STR or self.tipo.tipo_enum != tipo.STRING):
+            if self.tipo.tipo_enum == tipo.I64 or self.tipo.tipo_enum == tipo.F64 or self.tipo.tipo_enum == tipo.STR \
+                    or self.tipo.tipo_enum == tipo.STRING:
                 nuevoSimbolo = Simbolo(id, self.tipo,self.tipoSimbolo,1, ts.nombre, ts.getUltimaPosStack(),-1)
                 ts.put(id, nuevoSimbolo)
                 entorno.tabla_simbolos_global.append(nuevoSimbolo)
@@ -32,7 +33,8 @@ class Declaracion(Nodo):
 
         self.expresion += self.valor.crearCodigo3d(ts)
         for id in self.listaid:
-            if self.tipo.tipo_enum == tipo.I64 or self.tipo.tipo_enum == tipo.F64:
+            if self.tipo.tipo_enum == tipo.I64 or self.tipo.tipo_enum == tipo.F64 or self.tipo.tipo_enum == tipo.STR\
+                    or self.tipo.tipo_enum == tipo.STRING:
                 self.expresion += tempValor + " = " + str(self.valor.ref)+";\n"
             elif self.tipo.tipo_enum == tipo.BOOL:
                 print("-",self.valor.exp1)
@@ -46,6 +48,6 @@ class Declaracion(Nodo):
 
 
     def calcTam(self):
-        if self.tipo.tipo_enum == tipo.I64 or self.tipo.tipo_enum == tipo.F64 or self.tipo.tipo_enum == tipo.BOOL or self.tipo.tipo_enum == tipo.CHAR:
+        if self.tipo.tipo_enum != tipo.VEC or self.tipo.tipo_enum != tipo.ERROR:
             return 1
         return 0

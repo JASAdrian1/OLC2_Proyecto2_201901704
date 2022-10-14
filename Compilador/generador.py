@@ -1,3 +1,4 @@
+from Compilador.Entorno import entorno
 
 temporal = 0
 etiqueta = 0
@@ -30,6 +31,9 @@ def unirEtiquetas(etiqueta1, etiqueta2):
 def generarGoto(eti):
     return "goto "+eti+";\n"
 
+def generarAumentoHeap():
+    return "H = H + 1;\n"
+
 def mostrarEtiquetas(etiV, etiF):
     expresion = ""
     expresion += "#Etiquetas verdaderas\n"
@@ -49,3 +53,5 @@ def generarListaTemporales():
         lista += ",t"+str(i)
     lista += ";"
     return lista
+
+

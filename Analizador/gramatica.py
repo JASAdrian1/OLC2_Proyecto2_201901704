@@ -41,7 +41,7 @@ reserved = {
     'char': 'CHAR',
     'String': 'STRING',
     'usize': 'USIZE',
-    '&str': 'STR',
+    'str': 'STR',
     'pow': 'POW',
     'abs': 'ABS',
     'sqrt': 'SQRT',
@@ -250,6 +250,7 @@ def p_marc_sup(t):
     global sup
     sup = Entorno("global")
     entorno.desplazamiento = 0
+    entorno.posHeap = 0
     generador.codigoGenerado = ""
     generador.temporal = 0
     generador.etiqueta = 0
@@ -380,10 +381,13 @@ def p_tipo(t):
             | BOOL
             | CHAR
             | STRING
-            | STR
+            | AMPERSAND STR
             | USIZE
     '''
-    t[0] = Tipo(t[1].upper())
+    if len(t) == 2:
+        t[0] = Tipo(t[1].upper())
+    else:
+        t[0] = Tipo(t[2].upper())
     return t
 
 # ------------------------------ARREGLOS------------------------------------------
@@ -453,7 +457,8 @@ def p_impresion(t):
                 | PRINTLN NOT PARA CADENA COMA lista_expresiones PARC
     '''
     if len(t) == 6:
-        t[0] = Println(t.slice[0],getNoNodo(),t[4],None,t.lexer.lineno,1)
+        cadena = Primitivo(t.slice[1],getNoNodo(),t[4][1:-1],"STR",t.lexer.lineno,1)
+        t[0] = Println(t.slice[0],getNoNodo(),cadena,None,t.lexer.lineno,1)
     elif len(t) == 8:
         t[0] = Println(t.slice[0],getNoNodo(),t[4],t[6],t.lexer.lineno,1)
     return t

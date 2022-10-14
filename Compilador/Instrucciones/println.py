@@ -1,5 +1,6 @@
 import re
 
+from Compilador import generador
 from Compilador.Interfaces.nodo import Nodo
 from Compilador.TablaSimbolo.tipo import tipo
 
@@ -29,10 +30,11 @@ class Println(Nodo):
                                 self.expresion += self.generarCodigoImpresion(self.valores[0],ts)
                                 del self.valores[0]
         else:
-            copia = self.cadena
-            copia = copia[1:-1]
-            for caracter in copia:
-                self.expresion += "printf(\"%c\"," + str(ord(caracter)) + ");\n"
+            self.expresion += self.cadena.crearCodigo3d(ts)
+            self.expresion += "P = P + 0;\n"
+            self.expresion += "stack[(int)P] = " + str(self.cadena.ref) + ";\n"
+            self.expresion += "imprimir();\n"
+            self.expresion += "P = P - 0;\n"
 
         self.expresion += "printf(\"%c\",10);\n"
         return self.expresion
@@ -47,6 +49,12 @@ class Println(Nodo):
             cadena += "printf(\"%d\",(int)"+valor.ref + ");\n"
         elif valor.tipo.tipo_enum == tipo.F64:
             cadena += "printf(\"%f\","+valor.ref + ");\n"
+        elif valor.tipo.tipo_enum == tipo.STR or valor.tipo.tipo_enum == tipo.STRING:
+            cadena += valor.crearCodigo3d(ts)
+            cadena += "P = P + 0;\n"
+            cadena += "stack[(int)P] = " + str(valor.ref) + ";\n"
+            cadena += "imprimir();\n"
+            cadena += "P = P - 0;\n"
         return cadena
 
 
@@ -56,5 +64,33 @@ class Println(Nodo):
         return 0
 
 
-def imprimirCadena():
-    pass
+def funcionImprimirCadena():
+    codigoGenerado = ""
+    etiImprimendo = []
+    etiSalida = []
+
+
+    etiImprimendo.append(generador.nuevaEtiqueta())
+    etiSalida.append(generador.nuevaEtiqueta())
+
+    tempPosString = generador.nuevoTemporal()
+    tempValString = generador.nuevoTemporal()
+    tempFin = generador.nuevoTemporal()
+
+    codigoGenerado += "\n\nvoid imprimir(){\n"
+    codigoGenerado += tempPosString + " = stack[(int)P];\n"
+    codigoGenerado += tempValString + " = heap [(int)" + tempPosString + "];\n"
+    codigoGenerado += tempFin + " = - 1;\n"
+
+    codigoGenerado += generador.soltarEtiqueta(etiImprimendo)
+    codigoCondicion = tempValString + " == " + tempFin
+    codigoGenerado += "if (" + codigoCondicion + ")" + generador.generarGoto(etiSalida[0])
+    codigoGenerado += "printf(\"%c\", (int)" + tempValString + ");\n"
+    codigoGenerado += tempPosString + " = " + tempPosString + " + 1;\n"
+    codigoGenerado += tempValString + " = heap[(int)" + tempPosString + "];\n"
+    codigoGenerado += generador.generarGoto(etiImprimendo[0])
+    codigoGenerado += generador.soltarEtiqueta(etiSalida)
+    codigoGenerado += "return;\n}\n"
+
+    return codigoGenerado
+

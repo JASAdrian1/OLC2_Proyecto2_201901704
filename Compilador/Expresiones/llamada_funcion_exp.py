@@ -22,6 +22,7 @@ class Llamada_funcion_exp(Nodo):
         self.expresion += "P = P + " + str(funcionRaiz.size) + ";\n"
 
         funcionLlamada = getFuncionTablaGlobal(self.id)
+        self.tipo = funcionLlamada.tipo_dato    #Se asigna el tipo que sera la llamada
         if funcionLlamada is not None:
             #EN DADO CASO LA FUNCION TENGA PARAMETROS, SE CREARA EL CODIGO 3 DE ESTOS
             if self.parametros is not None:

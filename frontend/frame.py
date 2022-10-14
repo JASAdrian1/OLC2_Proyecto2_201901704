@@ -7,6 +7,7 @@ from Analizador.gramatica import analizar_entrada
 from Compilador.Entorno import entorno
 from Compilador.Entorno.entorno import Entorno,mostrarSimbolos,tabla_simbolos_global,mostrarTablaGlobal
 from Compilador import generador
+from Compilador.Instrucciones import println
 
 
 class Ventana:
@@ -73,12 +74,13 @@ class Ventana:
         header += "float heap[100000];\n"
         header += "float P;\n"
         header += "float H;\n"
-        codigo3d = header
+        codigo3d = ""
         for nodo in nodos:
             codigo3d += nodo.crearCodigo3d(sup)
 
+        funcionImprimir = println.funcionImprimirCadena()       #Se genera la funcion para imprimir cadenas
         header += generador.generarListaTemporales() + "\n"
-        codigo3d = header + codigo3d
+        codigo3d = header + codigo3d + funcionImprimir
         self.text_console.insert("0.1", codigo3d)
 
 
