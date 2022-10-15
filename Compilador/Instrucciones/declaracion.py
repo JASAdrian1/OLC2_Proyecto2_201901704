@@ -21,7 +21,6 @@ class Declaracion(Nodo):
         for id in self.listaid:
             if self.tipo is None:
                 self.valor.crearTabla(ts)
-                print("HOLAAAAAAAAA")
                 print("--",self.valor.tipo)
                 self.tipo = self.valor.tipo
             print(id)
