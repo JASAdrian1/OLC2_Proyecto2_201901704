@@ -13,6 +13,7 @@ class Sentencia_Return(Nodo):
 
     def crearTabla(self,ts):
         simboloFuncion = ts.get(ts.funcionEnEjecucion,"funcion")
+        print("Funcion: ",ts.funcionEnEjecucion)
         print(simboloFuncion.tipo_dato)
         size = 0
         if self.valorRetornado is not None:
@@ -35,11 +36,11 @@ class Sentencia_Return(Nodo):
             self.valorRetornado.crearCodigo3d(ts)
             self.expresion += self.valorRetornado.expresion
 
-            self.expresion += "stack[(int)P] = " + self.valorRetornado.ref + ";\n"
+            self.expresion += "stack[(int)P] = " + str(self.valorRetornado.ref) + ";\n"
 
 
         return self.expresion
 
 
     def calcTam(self):
-        return 0
+        return 1

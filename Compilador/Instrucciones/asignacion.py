@@ -15,7 +15,7 @@ class Asignacion(Nodo):
 
     def crearCodigo3d(self,ts):
         simbolo = ts.get(self.id, "variable")
-
+        print(self.id)
         self.nuevoValor.crearCodigo3d(ts)  # Se ejecuta el codigo 3d del nuevo valor que se le asignara a la varable
         self.expresion += self.nuevoValor.expresion  # Se concatena el codigo del nuevo valor al codigo que llevamos
 

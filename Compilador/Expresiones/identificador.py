@@ -12,7 +12,8 @@ class Identificador(Nodo):
 
 
     def crearTabla(self,ts):
-        pass
+        simbolo = ts.get(self.id,"variable")
+        self.tipo = Tipo(simbolo.tipo_dato.tipo_string)
 
 
     def crearCodigo3d(self,ts):
@@ -28,6 +29,14 @@ class Identificador(Nodo):
         self.ref = tempValId
 
         return self.expresion
+
+
+    def actualizarReferencia(self,simbolo):
+        tempNewPos = generador.nuevoTemporal()
+        self.expresion += tempNewPos + " = P + " + str(simbolo.direccionRel) + ";\n"
+        self.expresion += self.ref + " = stack[(int)" + tempNewPos + "];\n"
+        return self.expresion
+
 
     def calcTam(self):
         return 0

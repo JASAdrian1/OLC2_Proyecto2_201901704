@@ -1,6 +1,7 @@
 import re
 
 from Compilador import generador
+from Compilador.Expresiones.primitivo import Primitivo
 from Compilador.Interfaces.nodo import Nodo
 from Compilador.TablaSimbolo.tipo import tipo
 
@@ -23,12 +24,22 @@ class Println(Nodo):
             llaves_cadena = re.findall(r'{}',self.cadena)
             llaves_cadena_array = re.findall(r'{:\?}',self.cadena)
             if len(self.valores) == len(llaves_cadena) + len(llaves_cadena_array):
+                cadenaActual = ""
                 for i in range(0,len(copia_cadena_original)):
+                    cadenaActual = cadenaActual + str(copia_cadena_original[i])
+                    print("wwww ",cadenaActual)
                     if copia_cadena_original[i] == "{":     #Se verifica si se quiere imprimir un valor de la lista
                         if i<len(copia_cadena_original)-1:
                             if copia_cadena_original[i+1] =="}":
+                                if len(cadenaActual)>2:
+                                    cadenaActual = cadenaActual[0:-1]
+                                    simbCadenaActual = Primitivo(self.token,-1,cadenaActual,"STR",self.linea,self.cadena)
+                                    #Primero se genera la impresion de la cadena que se lleva hasta el momento
+                                    self.expresion += self.generarCodigoImpresion(simbCadenaActual,ts)
+                                #Posteriormente se genera la impresion del contenido de la variable
                                 self.expresion += self.generarCodigoImpresion(self.valores[0],ts)
                                 del self.valores[0]
+                                cadenaActual = ""
         else:
             self.expresion += self.cadena.crearCodigo3d(ts)
             self.expresion += "P = P + 0;\n"
@@ -46,11 +57,12 @@ class Println(Nodo):
         valor.crearCodigo3d(ts)
         cadena += valor.expresion
         if valor.tipo.tipo_enum == tipo.I64 or valor.tipo.tipo_enum == tipo.BOOL:
-            cadena += "printf(\"%d\",(int)"+valor.ref + ");\n"
+            cadena += "printf(\"%d\",(int)"+str(valor.ref) + ");\n"
         elif valor.tipo.tipo_enum == tipo.F64:
-            cadena += "printf(\"%f\","+valor.ref + ");\n"
+            cadena += "printf(\"%f\","+ str(valor.ref) + ");\n"
+        elif valor.tipo.tipo_enum == tipo.CHAR:
+            cadena += "printf(\"%c\",(int)" + str(valor.ref) + ");\n"
         elif valor.tipo.tipo_enum == tipo.STR or valor.tipo.tipo_enum == tipo.STRING:
-            cadena += valor.crearCodigo3d(ts)
             cadena += "P = P + 0;\n"
             cadena += "stack[(int)P] = " + str(valor.ref) + ";\n"
             cadena += "imprimir();\n"

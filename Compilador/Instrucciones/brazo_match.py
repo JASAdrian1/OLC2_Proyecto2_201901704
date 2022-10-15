@@ -14,6 +14,7 @@ class Brazo_Match(Nodo):
 
     def crearTabla(self,ts):
         self.entorno.entornoAnterior = ts
+        self.entorno.funcionEnEjecucion = ts.funcionEnEjecucion
         self.entorno.crearListaNombresEntorno()
 
         for instruccion in self.instrucciones:

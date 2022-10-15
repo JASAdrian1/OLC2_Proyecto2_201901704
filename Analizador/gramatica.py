@@ -2,6 +2,7 @@ from Compilador.Entorno import entorno
 from Compilador.TablaSimbolo.tipo import Tipo
 from Compilador.Expresiones.primitivo import Primitivo
 from Compilador.Expresiones.Operaciones.aritmetica import Aritmetica
+from Compilador.Expresiones.to_string import To_string
 from Compilador.Entorno.entorno import Entorno, mostrarSimbolos
 from Compilador.Entorno.simbolo import Simbolo
 from Compilador.Expresiones.condicion import Condicion
@@ -323,12 +324,26 @@ def p_instruccion_match(t):
                         | bucle_while
                         | bucle_for
                         | BREAK
+                        | CONTINUE
+                        | RETURN
+                        | RETURN expresion
                         | push_vector
                         | insertar_en_vector
                         | remove_vector
                         | llamada_funcion
     '''
-    t[0] = t[1]
+    if t[1] == "break":
+        t[0] = Sentencia_Break(t.slice[1], getNoNodo(), t.lexer.lineno, 1)
+    elif t[1] == "continue":
+        t[0] = Sentencia_Continue(t.slice[1], getNoNodo(), t.lexer.lineno, 1)
+    elif t[1] == "return":
+        if len(t) == 2:
+            t[0] = Sentencia_Return(t.slice[1], getNoNodo(), None, t.lexer.lineno, 1)
+        else:
+            t[0] = Sentencia_Return(t.slice[1], getNoNodo(), t[2], t.lexer.lineno, 1)
+    else:
+        t[0] = t[1]
+    return t
     return t
 
 
@@ -460,7 +475,7 @@ def p_impresion(t):
         cadena = Primitivo(t.slice[1],getNoNodo(),t[4][1:-1],"STR",t.lexer.lineno,1)
         t[0] = Println(t.slice[0],getNoNodo(),cadena,None,t.lexer.lineno,1)
     elif len(t) == 8:
-        t[0] = Println(t.slice[0],getNoNodo(),t[4],t[6],t.lexer.lineno,1)
+        t[0] = Println(t.slice[0],getNoNodo(),t[4][1:-1],t[6],t.lexer.lineno,1)
     return t
 
 
@@ -503,12 +518,12 @@ def p_sentencia_if(t):
 
 def p_sentencia_match(t):
     ''' sentencia_match : MATCH expresion LLAVEA lista_casos_match LLAVEC
-                        | MATCH expresion LLAVEA lista_casos_match GUIONBAJO IGUAL MAYORQUE instruccion_match LLAVEC
-                        | MATCH expresion LLAVEA lista_casos_match GUIONBAJO IGUAL MAYORQUE instrucciones_match COMA LLAVEC
+                        | MATCH expresion LLAVEA lista_casos_match GUIONBAJO IGUAL MAYORQUE instruccion_match COMA LLAVEC
+                        | MATCH expresion LLAVEA lista_casos_match GUIONBAJO IGUAL MAYORQUE instrucciones_match  LLAVEC
     '''
     if len(t) == 6:
         t[0] = Sentencia_Match(t.slice[0],getNoNodo(), t[2], t[4], None, t.lexer.lineno, 1)
-    elif len(t) == 10:
+    elif len(t) == 11:
         t[0] = Sentencia_Match(t.slice[0],getNoNodo(), t[2], t[4], [t[8]], t.lexer.lineno, 1)
     else:
         t[0] = Sentencia_Match(t.slice[0],getNoNodo(), t[2], t[4], t[8], t.lexer.lineno, 1)
@@ -675,6 +690,8 @@ def p_expresion_aritmeticas(t):
     '''
     if len(t) == 4:
         t[0] = Aritmetica(t.slice[0],getNoNodo(),t[1],t[3],False, t[2])
+    elif len(t) == 3:
+        t[0] = Aritmetica(t.slice[0],getNoNodo(),t[2],None,True,t[1])
     return t
 
 
@@ -734,21 +751,24 @@ def p_expresion_primitivos(t):
             tipo = "CHAR"
         else:
             tipo = "STR"
-    #elif isinstance(t[1],ToString):
-    #    tipo = "STRING"
+    elif isinstance(t[1],To_string):
+        tipo = "STRING"
     else:
         tipo = "ERROR"
     valor = t[1]
     if tipo == "CHAR" or tipo == "STR":
         valor = valor[1:-1]
     elif tipo == "STRING":
-        valor = t[1].valor
+        valor = t[1].valor.valor
+        print(valor)
     t[0] = Primitivo(t.slice[1],getNoNodo(),valor,tipo,t.lexer.lineno,1)
     return t
 
 def p_expresion_to_string(t):
     ''' to_string : expresion PUNTO TO GUIONBAJO STRINGE PARA PARC
     '''
+    t[0] = To_string(t[1])
+    return t
 
 
 def p_expresion_id(t):

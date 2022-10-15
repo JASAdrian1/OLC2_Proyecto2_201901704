@@ -17,7 +17,7 @@ class Parametro_funcion(Nodo):
 
     def crearTabla(self,ts):
         if self.tipoParametro != tipo.STR or self.tipoParametro != tipo.STRING:
-            nuevoSimbolo = Simbolo(self.id,self.tipoParametro,"variable",1,ts.nombre,ts.getUltimaPosStack(),-1)
+            nuevoSimbolo = Simbolo(self.id,self.tipoParametro,"parametro",1,ts.nombre,ts.getUltimaPosStack(),-1)
             ts.put(self.id, nuevoSimbolo)
             entorno.tabla_simbolos_global.append(nuevoSimbolo)
         #FALTA QUE AGREGAR EL CASO EN DONDE LA VARIABLE SEA DE TIPO STRING

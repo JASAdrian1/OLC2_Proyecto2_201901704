@@ -29,6 +29,9 @@ class Primitivo(Nodo):
             self.expresion += generador.generarAumentoHeap()
             self.ref = tempInicioString
             self.posHeap = posInicioString
+        elif self.tipo.tipo_enum == tipo.CHAR:
+            self.expresion = ""
+            self.ref = str(ord(self.nombre))
         else:
             self.expresion = ""
             self.ref = self.nombre

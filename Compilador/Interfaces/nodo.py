@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 class Nodo(ABC):
     def __init__(self, token, idNodo):
+        self.token = token
         self.nombre = token.type
         self.tipo = token.type
         self.valor = token.value

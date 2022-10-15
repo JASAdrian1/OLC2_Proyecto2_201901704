@@ -19,9 +19,15 @@ class Declaracion(Nodo):
 
     def crearTabla(self,ts):
         for id in self.listaid:
+            if self.tipo is None:
+                self.valor.crearTabla(ts)
+                print("HOLAAAAAAAAA")
+                print("--",self.valor.tipo)
+                self.tipo = self.valor.tipo
+            print(id)
             print(self.tipo.tipo_enum)
             if self.tipo.tipo_enum == tipo.I64 or self.tipo.tipo_enum == tipo.F64 or self.tipo.tipo_enum == tipo.STR \
-                    or self.tipo.tipo_enum == tipo.STRING:
+                    or self.tipo.tipo_enum == tipo.STRING or self.tipo.tipo_enum == tipo.CHAR or self.tipo.tipo_enum == tipo.BOOL:
                 nuevoSimbolo = Simbolo(id, self.tipo,self.tipoSimbolo,1, ts.nombre, ts.getUltimaPosStack(),-1)
                 ts.put(id, nuevoSimbolo)
                 entorno.tabla_simbolos_global.append(nuevoSimbolo)
@@ -34,7 +40,7 @@ class Declaracion(Nodo):
         self.expresion += self.valor.crearCodigo3d(ts)
         for id in self.listaid:
             if self.tipo.tipo_enum == tipo.I64 or self.tipo.tipo_enum == tipo.F64 or self.tipo.tipo_enum == tipo.STR\
-                    or self.tipo.tipo_enum == tipo.STRING:
+                    or self.tipo.tipo_enum == tipo.STRING or self.tipo.tipo_enum == tipo.CHAR:
                 self.expresion += tempValor + " = " + str(self.valor.ref)+";\n"
             elif self.tipo.tipo_enum == tipo.BOOL:
                 print("-",self.valor.exp1)

@@ -17,6 +17,8 @@ class Sentencia_If(Nodo):
     def crearTabla(self,ts):
         self.entornoIf.entornoAnterior = ts
         self.entornoElse.entornoAnterior = ts
+        self.entornoIf.funcionEnEjecucion = ts.funcionEnEjecucion
+        self.entornoElse.funcionEnEjecucion = ts.funcionEnEjecucion
 
         self.entornoIf.crearListaNombresEntorno()
         self.entornoElse.crearListaNombresEntorno()
@@ -35,11 +37,15 @@ class Sentencia_If(Nodo):
         self.expresion += self.condicion.crearCodigo3d(ts)
         self.expresion += generador.soltarEtiqueta(self.condicion.etiV) #SE MUESTRAN LAS ETIQUETAS VERDADERAS
 
+        self.entornoIf.listaEtiquetas = ts.listaEtiquetas
+        self.entornoElse.listaEtiquetas = ts.listaEtiquetas
+
         #<---- EN ESTE ESPACIO DE AQUI SE DEBERIA GENERA EL CODIGO DE LAS INSTRUCCIONES----->
         self.expresion += "//CODIGO GENERADO POR LAS INSTRUCCIONES DENTRO DE IF\n"
         for instruccion in self.instruccionesif:
             exp_instruccion = instruccion.crearCodigo3d(self.entornoIf)
             if exp_instruccion == "break":
+                print(ts.nombre)
                 self.expresion += generador.generarGoto(ts.listaEtiquetas[-1])      #Se insertas las etiquetas en listaEtiquetas desde las instrucciones de los bucles
             elif exp_instruccion == "continue":
                 self.expresion += generador.generarGoto(ts.listaEtiquetas[-2])

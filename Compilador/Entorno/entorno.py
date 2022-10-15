@@ -1,4 +1,4 @@
-
+from Compilador.Expresiones.identificador import Identificador
 
 desplazamiento = 0
 posHeap = 0
@@ -38,7 +38,6 @@ class Entorno:
         while entorno is not None:
             if id in entorno.tablaSimbolos:
                 if tipoSimbolo is not None:
-                    print(id)
                     print(tipoSimbolo, " == ",entorno.tablaSimbolos[id].tipo_simbolo)
                     #if tipoSimbolo == entorno.tablaSimbolos[id].tipo_simbolo:
                     return entorno.tablaSimbolos[id]
@@ -65,6 +64,17 @@ class Entorno:
                 return 0
             else:
                 return 0
+
+
+    def actualizarValorVariable(self):
+        codigoGenerado = ""
+        for simbolo in tabla_simbolos_global:
+            print("Simbolo: ",simbolo.tipo_simbolo)
+            print(simbolo.id)
+            if simbolo.tipo_simbolo == "parametro":
+                if isinstance(simbolo,Identificador):
+                    codigoGenerado += simbolo.actualizarReferencia(self.tablaSimbolos)
+        return codigoGenerado
 
 
     def crearListaNombresEntorno(self):

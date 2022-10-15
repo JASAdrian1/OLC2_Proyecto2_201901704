@@ -18,6 +18,11 @@ class Llamada_funcion_ins(Nodo):
         #Se busca en la tabla la funcion desde la que se ejecutara la llamada de la funcion
         funcionRaiz = getFuncionTablaGlobal(ts.funcionEnEjecucion)
 
+        if self.parametros is not None:
+            for parametro in self.parametros:
+                parametro.crearCodigo3d(ts)
+                self.expresion += parametro.expresion
+
         #Se aumenta le valor del apuntador del stack para empezar a almacenar los parametros de la funcion
         self.expresion += "P = P + " + str(funcionRaiz.size) + ";\n"
 
@@ -27,8 +32,8 @@ class Llamada_funcion_ins(Nodo):
             if self.parametros is not None:
                 desplazamientoParametro = 1  # Este desplazamiento se utiliza para ir guardando los parametros en el stack
                 for parametro in self.parametros:
-                    parametro.crearCodigo3d(ts)
-                    self.expresion += parametro.expresion
+                    #parametro.crearCodigo3d(ts)
+                    #self.expresion += parametro.expresion
                     tempPosParametro = generador.nuevoTemporal()
                     self.expresion += tempPosParametro + " = P + " + str(desplazamientoParametro) + ";\n"
                     self.expresion += "stack[(int)" + tempPosParametro + "] = " + str(parametro.ref) + ";\n"

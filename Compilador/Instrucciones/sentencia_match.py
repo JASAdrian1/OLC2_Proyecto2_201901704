@@ -17,6 +17,7 @@ class Sentencia_Match(Nodo):
 
     def crearTabla(self,ts):
         self.entornoDefault.entornoAnterior = ts
+        self.entornoDefault.funcionEnEjecucion = ts.funcionEnEjecucion
         self.entornoDefault.crearListaNombresEntorno()
 
         for brazo in self.listaBrazo:
