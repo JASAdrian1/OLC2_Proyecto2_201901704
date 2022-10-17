@@ -45,6 +45,7 @@ class Ventana:
         botonReporte = tk.Button(frameBotones, text="Crear reporte", command=lambda:(self.crearReporte(cbcReportes.get())))
         botonAcerca = tk.Button(frameBotones,text="Acerca de", command=lambda:(self.mostrarInfo()))
         botonBorrarConsola = tk.Button(frameBotones, text="Limpiar consola", command=lambda:(self.limpiarConsola()))
+        botonSelectText = tk.Button(frameBotones, text="Seleccionar texto", command=lambda:(self.seleccionarTexto()))
 
         botonEditor.pack(side="left")
         botonCompilar.pack(side="left")
@@ -52,6 +53,7 @@ class Ventana:
         botonReporte.pack(side="left")
         botonAcerca.pack(side="left")
         botonBorrarConsola.pack(side="left")
+        botonSelectText.pack(side="right")
 
     def compilar(self):
         self.text_console.delete("1.0",tk.END)
@@ -93,4 +95,9 @@ class Ventana:
 
     def limpiarConsola(self):
         self.text_editor.delete('1.0', tk.END)
+
+    def seleccionarTexto(self):
+        contenido = self.text_console.get('1.0', tk.END)
+        self.ventana.clipboard_clear()
+        self.ventana.clipboard_append(contenido)
 

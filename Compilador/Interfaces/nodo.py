@@ -9,6 +9,7 @@ class Nodo(ABC):
         self.tipo = token.type
         self.valor = token.value
         self.idNodo = idNodo
+        self.posHeap = -1
         self.expresion = ""
         self.ref = ""
         super().__init__()

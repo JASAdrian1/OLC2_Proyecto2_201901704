@@ -24,6 +24,8 @@ from Compilador.Instrucciones.llamada_funcion_ins import Llamada_funcion_ins
 from Compilador.Expresiones.llamada_funcion_exp import Llamada_funcion_exp
 from Compilador.Expresiones.parametro_llamada import Parametro_llamada
 from Compilador.Instrucciones.sentencia_return import Sentencia_Return
+from Compilador.Instrucciones.Estructuras.declaracion_arreglo import Declaracion_arreglo
+from Compilador.Expresiones.acceso_arreglo import Acceso_Arreglo
 from Compilador.Instrucciones.println import Println
 
 
@@ -325,7 +327,6 @@ def p_instruccion_match(t):
                         | bucle_for
                         | BREAK
                         | CONTINUE
-                        | RETURN
                         | RETURN expresion
                         | push_vector
                         | insertar_en_vector
@@ -374,6 +375,8 @@ def p_asignacion(t):
     '''
     if len(t) == 4:
         t[0] = Asignacion(t.slice[0],getNoNodo(),t[1],t[3],t.lexer.lineno,1)
+    elif len(t) == 5:
+        t[0] = Acceso_Arreglo(t.slice[0],getNoNodo(),t[1],t[2],t.lexer.lineno,1,t[4])
     return t
 
 
@@ -410,6 +413,11 @@ def p_declaracion_arreglo(t):
     ''' declaracion : LET MUT lista_id DOSP CORA dimension_arreglo_declaracion CORC IGUAL expresion
                     | LET lista_id DOSP CORA dimension_arreglo_declaracion CORC IGUAL expresion
     '''
+    if len(t) == 10:
+        t[0] = Declaracion_arreglo(t.slice[0],getNoNodo(),t[3],t[9],Tipo("ARRAY"),t[6][0],t[6],True,t.lexer.lineno,1)
+    elif len(t) == 9:
+        t[0] = Declaracion_arreglo(t.slice[0],getNoNodo(),t[2],t[8],Tipo("ARRAY"),t[5][0],t[5],False,t.lexer.lineno,1)
+    return t
 
 
 def p_dimension_arreglo_declaracion(t):
@@ -795,6 +803,8 @@ def p_expresion_arreglo(t):
 def p_acceso_arreglo(t):
     ''' expresion : ID dimensiones_acceso_arreglo
     '''
+    t[0] = Acceso_Arreglo(t.slice[0],getNoNodo(),t[1],t[2],t.lexer.lineno,1)
+    return t
 
 
 def p_dimension_vector_declaracion(t):

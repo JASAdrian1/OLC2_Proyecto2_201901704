@@ -18,6 +18,7 @@ class Identificador(Nodo):
 
     def crearCodigo3d(self,ts):
         simbolo = ts.get(self.id,"variable")
+        print(self.id)
         self.tipo = Tipo(simbolo.tipo_dato.tipo_string)
         #print("/*",self.tipo.tipo_string)
 

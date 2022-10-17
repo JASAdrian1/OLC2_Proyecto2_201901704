@@ -17,6 +17,9 @@ class Println(Nodo):
 
     def crearTabla(self,ts):
         pass
+        #ARREGLAR PARA QUE EN LA TABLA DE SIMBOLOS SE TOME EN CUENTA LAS CADENAS QUE NO SE GUARDAN PARA LA POS DEL HEAP
+        #if self.cadena.tipo.tipo_enum == tipo.STR or self.cadena.tipo.tipo_enum == tipo.STRING:
+        #    self.cadena.crearTabla(ts)  # Se llama la funcion unicamente para modificar el valor del heap en la tabla simbolos
 
     def crearCodigo3d(self,ts):
         if self.valores is not None:
@@ -63,6 +66,7 @@ class Println(Nodo):
         elif valor.tipo.tipo_enum == tipo.CHAR:
             cadena += "printf(\"%c\",(int)" + str(valor.ref) + ");\n"
         elif valor.tipo.tipo_enum == tipo.STR or valor.tipo.tipo_enum == tipo.STRING:
+            valor.crearTabla(ts)    #Se llama la funcion unicamente para modificar el valor del heap en la tabla simbolos
             cadena += "P = P + 0;\n"
             cadena += "stack[(int)P] = " + str(valor.ref) + ";\n"
             cadena += "imprimir();\n"
