@@ -22,6 +22,7 @@ class Declaracion_arreglo(Nodo):
     def crearTabla(self,ts):
         dimensiones = self.estructuraArreglos[:]
         dimensiones.pop(0)
+        dimensiones.reverse()
         for id in self.listaid:
             posHeap = entorno.posHeap
             nuevoSimbolo = Simbolo(id,self.tipo,"variable",1,ts.nombre,ts.getUltimaPosStack(),posHeap,dimensiones,self.tipoElementos)

@@ -59,6 +59,10 @@ class Println(Nodo):
         cadena = ""
         valor.crearCodigo3d(ts)
         cadena += valor.expresion
+        #print("--",valor.id)
+        print("--",valor.tipo)
+        print("--",valor)
+        print("--",valor.tipo.tipo_enum)
         if valor.tipo.tipo_enum == tipo.I64 or valor.tipo.tipo_enum == tipo.BOOL:
             cadena += "printf(\"%d\",(int)"+str(valor.ref) + ");\n"
         elif valor.tipo.tipo_enum == tipo.F64:

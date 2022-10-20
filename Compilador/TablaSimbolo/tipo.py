@@ -18,7 +18,18 @@ class Tipo:
     def __init__(self, tip):    #(self, tip: string)
         self.tipo_enum = tipo[tip]
         self.tipo_string = tip
+        self.tipoElementos = None
+        self.dimensiones = []
 
+
+class Tipo_Arreglo:
+    def __init__(self,tip,tipoElementos,dimensiones=None):
+        self.tipo_enum = tipo[tip]
+        self.tipo_string = tip
+        self.tipoElementos = tipoElementos
+        self.dimensiones = []
+        if dimensiones is not None:
+            self.dimensiones.append(dimensiones)
 
 
 global validar_tipo

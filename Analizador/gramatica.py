@@ -1,5 +1,5 @@
 from Compilador.Entorno import entorno
-from Compilador.TablaSimbolo.tipo import Tipo
+from Compilador.TablaSimbolo.tipo import Tipo, Tipo_Arreglo
 from Compilador.Expresiones.primitivo import Primitivo
 from Compilador.Expresiones.Operaciones.aritmetica import Aritmetica
 from Compilador.Expresiones.to_string import To_string
@@ -16,6 +16,8 @@ from Compilador.Instrucciones.sentencia_match import Sentencia_Match
 from Compilador.Instrucciones.brazo_match import Brazo_Match
 from Compilador.Instrucciones.sentencia_while import Sentencia_While
 from Compilador.Instrucciones.sentencia_loop import Sentencia_Loop
+from Compilador.Instrucciones.sentencia_for import Sentencia_for
+from Compilador.Instrucciones.recorrido_for import Recorrido_for
 from Compilador.Instrucciones.sentencia_break import Sentencia_Break
 from Compilador.Instrucciones.sentencia_continue import Sentencia_Continue
 from Compilador.Instrucciones.funcion import Funcion
@@ -26,6 +28,8 @@ from Compilador.Expresiones.parametro_llamada import Parametro_llamada
 from Compilador.Instrucciones.sentencia_return import Sentencia_Return
 from Compilador.Instrucciones.Estructuras.declaracion_arreglo import Declaracion_arreglo
 from Compilador.Expresiones.acceso_arreglo import Acceso_Arreglo
+from Compilador.Expresiones.len_arreglo import Len_Arreglo
+
 from Compilador.Instrucciones.println import Println
 
 
@@ -594,11 +598,18 @@ def p_while(t):
 def p_for(t):
     ''' bucle_for : FOR recorrido_for LLAVEA instrucciones LLAVEC
     '''
+    t[0] = Sentencia_for(t.slice[0],getNoNodo(),t[2],t[4],t.lexer.lineno,1)
+    return t
 
 def p_recorrido_for(t):
     ''' recorrido_for : expresion IN expresion
                     | expresion IN expresion DOSPUNTOSCONTINUO expresion
     '''
+    if len(t) == 4:
+        t[0] = Recorrido_for(t[1],t[3],None,None)
+    else:
+        t[0] = Recorrido_for(t[1],None,t[3],t[5])
+    return t
 
 
 # ------------------------------FUNCIONES-----------------------------------------
@@ -655,12 +666,26 @@ def p_tipo_parametro(t):
                         | STRING
                         | STR
                         | USIZE
-                        | VECN MENORQUE tipo MAYORQUE
-                        | CORA tipo CORC
+                        | VECN MENORQUE tipo_parametro MAYORQUE
+                        | CORA tipo_parametro CORC
                         | CORA tipo_parametro PYC ENTERO CORC
     '''
     if len(t) == 2:
         t[0] = Tipo(t[1].upper())
+    elif len(t) == 5:
+        t[0] = Tipo("VEC")
+        t[0].dimensiones.append(t[3].dimensiones)
+        t[0].tipoElementos = t[3]
+    elif len(t) == 6:
+        t[0] = Tipo("ARRAY")
+        if len(t[2].dimensiones) >0:
+            for dimension in t[2].dimensiones:
+                t[0].dimensiones.append(dimension)
+        t[0].dimensiones.append(t[4])
+        t[0].tipoElementos = t[4]
+    else:
+        t[0] = Tipo("ARRAY")
+        t[0].dimensiones.append(1)
     return t
 
 #---------------FUNCION COMO INSTRUCCION----------------------------------
@@ -819,6 +844,7 @@ def p_contains_vector(t):
 def p_len_vector(t):
     ''' expresion : expresion PUNTO LEN PARA PARC
     '''
+    t[0] = Len_Arreglo(t.slice[0],getNoNodo(),t[1],t.lexer.lineno,1)
 
 def p_capacity_vector(t):
     ''' expresion : expresion PUNTO CAPACITY PARA PARC

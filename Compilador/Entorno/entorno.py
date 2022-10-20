@@ -59,7 +59,10 @@ class Entorno:
                 ent = self.entornoAnterior
                 while ent is not None:
                     if len(self.entornoAnterior.tablaSimbolos) >0:
-                        return list(self.entornoAnterior.tablaSimbolos.values())[-1].direccionRel + 1
+                        if list(self.entornoAnterior.tablaSimbolos.values())[-1].direccionRel == -1:
+                            return 1
+                        else:
+                            return list(self.entornoAnterior.tablaSimbolos.values())[-1].direccionRel + 1
                     ent = ent.entornoAnterior
                 return 0
             else:

@@ -1,5 +1,6 @@
 from Compilador import generador
 from Compilador.Interfaces.nodo import Nodo
+from Compilador.TablaSimbolo.tipo import Tipo
 
 
 class Acceso_Arreglo(Nodo):
@@ -13,12 +14,19 @@ class Acceso_Arreglo(Nodo):
 
 
     def crearTabla(self,ts):
-        pass
+        simbolo = ts.get(self.id)
+        print("TIPO: ",simbolo.tipo_dato)
+        self.tipo = Tipo(simbolo.tipo_dato.tipo_string)
 
     def crearCodigo3d(self,ts):
         simbolo = ts.get(self.id)
-        print(self.id)
         self.tipo = simbolo.tipo_elementos
+        print("FF",simbolo, " -- ",self.id)
+        print(simbolo.tipo_dato)
+        print(self.tipo)
+        print(simbolo.dimensiones)
+        print(simbolo.direccionRel)
+        print(simbolo.tipo_elementos)
         #print(self.accesoArreglo)
         #print(simbolo.dimensiones)
         #print(simbolo.dimensiones[1])
@@ -29,7 +37,10 @@ class Acceso_Arreglo(Nodo):
         tempPosArrHeap = generador.nuevoTemporal()
         self.expresion += tempPosArrHeap + " = stack[(int)"+tempPosicionArr + "];\n"
 
-
+        print(self.id)
+        print(self.accesoArreglo)
+        print(simbolo.dimensiones)
+        print(simbolo.direccionRel)
         if len(self.accesoArreglo) == len(simbolo.dimensiones):
             posTempValor = generador.nuevoTemporal()
             tempValor = generador.nuevoTemporal()
@@ -98,6 +109,7 @@ class Acceso_Arreglo(Nodo):
                 self.expresion += "heap[(int)" + posTempValor + "] = " + str(self.nuevoValor.ref) + ";\n"
 
         else:
+            print("22222222222 ",self.id)
             self.expresion += "//***ERROR***Las dimension del acceso no coinciden con la declaracion del arreglo"
 
 
