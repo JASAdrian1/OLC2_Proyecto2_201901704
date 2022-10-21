@@ -29,6 +29,8 @@ from Compilador.Instrucciones.sentencia_return import Sentencia_Return
 from Compilador.Instrucciones.Estructuras.declaracion_arreglo import Declaracion_arreglo
 from Compilador.Expresiones.acceso_arreglo import Acceso_Arreglo
 from Compilador.Expresiones.len_arreglo import Len_Arreglo
+from Compilador.Instrucciones.Estructuras.inicializacion_vector import Inicializacion_Vector
+from Compilador.Instrucciones.Estructuras.declaracion_vector import Declaracion_Vector
 
 from Compilador.Instrucciones.println import Println
 
@@ -362,14 +364,22 @@ def p_declaracion(t):
     global desplazamiento
     global sup
     print("Reconociendo declaracion", t)
-    if len(t) == 7:
-        t[0] = Declaracion(t.slice[0],getNoNodo(),t[4],t[6],t[2],False,t.lexer.lineno,1)
+    if len(t) == 8:
+        tipo = t[5]
+    else:
+        tipo = t[4]
+    if len(t) == 6 and isinstance(t[5],Inicializacion_Vector):
+        t[0] = Declaracion_Vector(t.slice[0],getNoNodo(),t[3],t[5],Tipo("VEC"),None,True,None,t.lexer.lineno,1)
+    elif len(t) == 5 and isinstance(t[4], Inicializacion_Vector):
+        t[0] = Declaracion_Vector(t.slice[0], getNoNodo(), t[2], t[4], Tipo("VEC"), None, False, None,t.lexer.lineno, 1)
+    elif len(t) == 7:
+        t[0] = Declaracion(t.slice[0],getNoNodo(),tipo,t[6],t[2],False,t.lexer.lineno,1)
     elif len(t) == 5:
         t[0] = Declaracion(t.slice[0],getNoNodo(),None,t[4],t[2],False,t.lexer.lineno,1)
     elif len(t) == 6:
         t[0] = Declaracion(t.slice[0],getNoNodo(),None,t[5],t[3],True,t.lexer.lineno,1)
     elif len(t) == 8:
-        t[0] = Declaracion(t.slice[0], getNoNodo(),t[5],t[7],t[3],True,t.lexer.lineno,1)
+        t[0] = Declaracion(t.slice[0], getNoNodo(),tipo,t[7],t[3],True,t.lexer.lineno,1)
     return t
 
 
@@ -464,6 +474,22 @@ def p_declaracion_vector(t):
                     | LET MUT lista_id DOSP VECN MENORQUE tipo MAYORQUE IGUAL VECN DOSP DOSP WITH GUIONBAJO CAPACITY PARA expresion PARC
                     | LET lista_id DOSP VECN MENORQUE tipo MAYORQUE IGUAL VECN DOSP DOSP WITH GUIONBAJO CAPACITY PARA expresion PARC
     '''
+    if t[2] == "mut":
+        tipo = t[7]
+        mut = True
+    else:
+        tipo = t[6]
+        mut = False
+    if len(t) == 19:
+        t[0] = Declaracion_Vector(t.slice[0],getNoNodo(),t[3], None, Tipo("VEC"), tipo, mut, t[17], t.lexer.lineno, 1)
+    elif len(t) == 18:
+        t[0] = Declaracion_Vector(t.slice[0],getNoNodo(),t[2], None, Tipo("VEC"), tipo, mut,t[16], t.lexer.lineno, 1)
+    elif len(t) == 15:
+        t[0] = Declaracion_Vector(t.slice[0],getNoNodo(),t[2], None, Tipo("VEC"), tipo, mut, 0, t.lexer.lineno, 1)
+    elif len(t) == 16:
+        t[0] = Declaracion_Vector(t.slice[0],getNoNodo(),t[3], None, Tipo("VEC"), tipo, mut, 0, t.lexer.lineno, 1)
+    #print(tipo)
+    return t
 
 def p_push_en_vector(t):
     ''' push_vector : ID PUNTO PUSH PARA expresion PARC
@@ -667,25 +693,27 @@ def p_tipo_parametro(t):
                         | STR
                         | USIZE
                         | VECN MENORQUE tipo_parametro MAYORQUE
-                        | CORA tipo_parametro CORC
                         | CORA tipo_parametro PYC ENTERO CORC
+                        | CORA tipo_parametro CORC
     '''
     if len(t) == 2:
         t[0] = Tipo(t[1].upper())
+        t[0].tipoElementos = t[0]
     elif len(t) == 5:
         t[0] = Tipo("VEC")
         t[0].dimensiones.append(t[3].dimensiones)
-        t[0].tipoElementos = t[3]
+        t[0].tipoElementos = t[3].tipoElementos
     elif len(t) == 6:
         t[0] = Tipo("ARRAY")
         if len(t[2].dimensiones) >0:
             for dimension in t[2].dimensiones:
                 t[0].dimensiones.append(dimension)
         t[0].dimensiones.append(t[4])
-        t[0].tipoElementos = t[4]
+        t[0].tipoElementos = t[2].tipoElementos
     else:
         t[0] = Tipo("ARRAY")
         t[0].dimensiones.append(1)
+        t[0].tipoElementos = t[2].tipoElementos
     return t
 
 #---------------FUNCION COMO INSTRUCCION----------------------------------
@@ -836,6 +864,11 @@ def p_dimension_vector_declaracion(t):
     ''' expresion : VEC NOT CORA expresion PYC ENTERO CORC
                 | VEC NOT CORA lista_expresiones CORC
     '''
+    if len(t) == 8:  # t[0][0] = tipo principal del arreglo
+        t[0] = Inicializacion_Vector(t[4], t[6])
+    else:
+        t[0] = Inicializacion_Vector(t[4], 0)
+    return t
 
 def p_contains_vector(t):
     ''' expresion : expresion PUNTO CONTAINS PARA AMPERSAND expresion PARC

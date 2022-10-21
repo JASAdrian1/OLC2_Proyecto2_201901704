@@ -24,6 +24,9 @@ class Parametro_funcion(Nodo):
         else:
             nuevoSimbolo = Simbolo(self.id, self.tipoParametro, "parametro", 1, ts.nombre, ts.getUltimaPosStack(), -1)
             print("DIMENSIONES: ",self.tipoParametro.dimensiones)
+            print(self.tipoParametro.tipo_enum)
+            print(nuevoSimbolo.tipo_elementos)
+            nuevoSimbolo.tipo_elementos = self.tipoParametro.tipoElementos
             nuevoSimbolo.dimensiones = self.tipoParametro.dimensiones
             ts.put(self.id, nuevoSimbolo)
             entorno.tabla_simbolos_global.append(nuevoSimbolo)

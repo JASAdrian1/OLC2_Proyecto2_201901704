@@ -63,13 +63,20 @@ class Println(Nodo):
         print("--",valor.tipo)
         print("--",valor)
         print("--",valor.tipo.tipo_enum)
-        if valor.tipo.tipo_enum == tipo.I64 or valor.tipo.tipo_enum == tipo.BOOL:
+        if valor.tipo.tipo_enum == tipo.ARRAY or valor.tipo.tipo_enum == tipo.VEC:
+            valor.tipo.tipo_enum = valor.tipo.tipoElementos.tipo_enum
+            tipoValor = valor.tipo.tipoElementos.tipo_enum
+            print("GGGGGG ",valor.tipo.tipo_enum)
+        else:
+            tipoValor = valor.tipo.tipo_enum
+
+        if tipoValor == tipo.I64 or tipoValor == tipo.BOOL:
             cadena += "printf(\"%d\",(int)"+str(valor.ref) + ");\n"
-        elif valor.tipo.tipo_enum == tipo.F64:
+        elif tipoValor == tipo.F64:
             cadena += "printf(\"%f\","+ str(valor.ref) + ");\n"
-        elif valor.tipo.tipo_enum == tipo.CHAR:
+        elif tipoValor == tipo.CHAR:
             cadena += "printf(\"%c\",(int)" + str(valor.ref) + ");\n"
-        elif valor.tipo.tipo_enum == tipo.STR or valor.tipo.tipo_enum == tipo.STRING:
+        elif tipoValor == tipo.STR or tipoValor == tipo.STRING:
             valor.crearTabla(ts)    #Se llama la funcion unicamente para modificar el valor del heap en la tabla simbolos
             cadena += "P = P + 0;\n"
             cadena += "stack[(int)P] = " + str(valor.ref) + ";\n"
