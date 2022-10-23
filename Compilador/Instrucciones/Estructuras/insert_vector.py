@@ -15,6 +15,7 @@ class Insert_Vector(Nodo):
         pass
 
     def crearCodigo3d(self,ts):
+        self.expresion += "//insert vector\n"
         simbolo = ts.get(self.id)
 
         tempPosicionArr = generador.nuevoTemporal()
@@ -47,7 +48,7 @@ class Insert_Vector(Nodo):
         self.expresion += "stack[(int)" + tempPosicionArr + "] = H;\n"
         self.expresion += "heap[(int)H] = " + str(self.valor.ref) + ";\n"
         self.expresion += generador.generarAumentoHeap()
-        self.expresion += "heap[(int)H] = " + tempValorAcutal + ";\n"
+        self.expresion += "heap[(int)H] = " + tempPosArrHeap + ";\n"
         self.expresion += generador.generarAumentoHeap()
         self.expresion += generador.generarGoto(etiSalida2[0])
         self.expresion += generador.soltarEtiqueta(etiInicio)
@@ -62,7 +63,6 @@ class Insert_Vector(Nodo):
         #Se almacena en nuevo temporal el valor del siguiente elemento del vector antes de ser modificado
         tempSiguienteVal = generador.nuevoTemporal()
         self.expresion +=tempSiguienteVal + " = heap[(int)" + tempPosValor + "];\n"
-        self.expresion += tempSiguienteVal + " = " + tempSiguienteVal + ";\n"
 
         self.expresion += "heap[(int)" + tempPosValor + "] = H;\n"
         self.expresion += "heap[(int)H] = " + str(self.valor.ref) + ";\n"

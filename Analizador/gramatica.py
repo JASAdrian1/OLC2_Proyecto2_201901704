@@ -33,7 +33,7 @@ from Compilador.Instrucciones.Estructuras.inicializacion_vector import Inicializ
 from Compilador.Instrucciones.Estructuras.declaracion_vector import Declaracion_Vector
 from Compilador.Instrucciones.Estructuras.push_vector import Push_Vector
 from Compilador.Instrucciones.Estructuras.insert_vector import Insert_Vector
-
+from Compilador.Instrucciones.Estructuras.capacity_vector import Capacity_Vector
 from Compilador.Instrucciones.println import Println
 
 
@@ -884,10 +884,13 @@ def p_len_vector(t):
     ''' expresion : expresion PUNTO LEN PARA PARC
     '''
     t[0] = Len_Arreglo(t.slice[0],getNoNodo(),t[1],t.lexer.lineno,1)
+    return t
 
 def p_capacity_vector(t):
     ''' expresion : expresion PUNTO CAPACITY PARA PARC
     '''
+    t[0] = Capacity_Vector(t.slice[0],getNoNodo(),t[1],t.lexer.lineno,1)
+    return t
 
 def p_remove_vector_expresion(t):
     ''' expresion : expresion PUNTO REMOVE PARA expresion PARC

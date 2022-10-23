@@ -25,6 +25,8 @@ class Push_Vector(Nodo):
 
         etiInicio = [generador.nuevaEtiqueta()]
         etiSalida = [generador.nuevaEtiqueta()]
+        etiSalida2 = [generador.nuevaEtiqueta()]
+        etiSalida3 = [generador.nuevaEtiqueta()]
 
         self.valor.crearCodigo3d(ts)
         self.expresion += self.valor.expresion
@@ -37,17 +39,29 @@ class Push_Vector(Nodo):
         self.expresion += tempSiguienteDir + " = heap[(int)" + tempPosValor + "];\n"        #Se almacena la direccion del siguiente arreglo
         self.expresion += generador.soltarEtiqueta(etiInicio)
         self.expresion += "if (" + tempSiguienteDir + " == -1) " + generador.generarGoto(etiSalida[0])  #Si la posicion del siguiente valor es -1 significa que es el final del vector
+        self.expresion += "if (" + tempSiguienteDir + " == 0) " + generador.generarGoto(etiSalida2[0])  # Si la posicion del siguiente valor es -1 significa que es el final del vector
+
         self.expresion += tempPosValor + " = " + tempSiguienteDir + " + 1;\n"
         self.expresion += tempSiguienteDir + " = heap[(int)" + tempPosValor + "];\n"
         #self.expresion += tempPosValor + " = heap[(int)" + tempPosValor + "];\n"
         self.expresion += generador.generarGoto(etiInicio[0])
-        self.expresion += generador.soltarEtiqueta(etiSalida)
 
+        self.expresion += generador.soltarEtiqueta(etiSalida)
         self.expresion += "heap[(int)" + tempPosValor + "] = H;\n"
         self.expresion += "heap[(int)H] = " + str(self.valor.ref) + ";\n"
         self.expresion += generador.generarAumentoHeap()
         self.expresion += "heap[(int)H] = -1;\n"
         self.expresion += generador.generarAumentoHeap()
+        self.expresion += generador.generarGoto(etiSalida3[0])
+
+        self.expresion += generador.soltarEtiqueta(etiSalida2)
+        tempSiguiente = generador.nuevoTemporal()
+        self.expresion += tempSiguiente + " = " + tempPosValor + " + 1;\n"
+        self.expresion += "heap[(int)" + tempPosValor + "] ="+ tempSiguiente +";\n"
+        self.expresion += tempPosValor + " = " + tempPosValor + " - 1;\n"
+        self.expresion += "heap[(int)" + tempPosValor + "] =" + str(self.valor.ref) + ";\n"
+
+        self.expresion += generador.soltarEtiqueta(etiSalida3)
 
         return self.expresion
 

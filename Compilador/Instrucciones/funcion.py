@@ -61,6 +61,8 @@ class Funcion(Nodo):
 
 
         self.expresion += tipoFuncion + " " + self.id + "() {\n"
+        if self.id == "main" :
+            self.expresion += "H = H + 1;\n"    #Si se trata de la funcion main se le suma 1 al heap para empezar desde 1
         for instruccion in self.listaInstrucciones:
             exp_instruccion = instruccion.crearCodigo3d(self.entorno)
             self.expresion += exp_instruccion
