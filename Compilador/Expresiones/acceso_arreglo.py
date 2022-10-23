@@ -22,6 +22,8 @@ class Acceso_Arreglo(Nodo):
         simbolo = ts.get(self.id)
         self.tipo = simbolo.tipo_dato
         self.tipo.tipoElementos = simbolo.tipo_elementos
+        print("Tipo simbolo: ",simbolo.tipo_dato.tipo_enum)
+        print(self.id)
         if simbolo.tipo_dato.tipo_enum == tipo.ARRAY:
             print("FF",simbolo, " -- ",self.id)
             print(simbolo.tipo_dato)
@@ -117,7 +119,8 @@ class Acceso_Arreglo(Nodo):
 
 
         #*******EN DADO CASO SE ESTE ACCIENDO A UN VECTOR SE EJECUTA EL SIGUIENTE CODIGO
-        elif tipo.VEC == self.tipo.tipo_dato.tipo_enum:
+
+        elif tipo.VEC == simbolo.tipo_dato.tipo_enum:
             print("Accediendo a vector")
             print(self.accesoArreglo)
 
@@ -147,6 +150,8 @@ class Acceso_Arreglo(Nodo):
             self.expresion += generador.generarGoto(etiInicio[0])
             self.expresion += generador.soltarEtiqueta(etiSalida)
 
+
+
             self.expresion += tempPosValor + " = " + tempPosValor + " - 1;\n"
             self.expresion += tempValor + " = heap[(int)" + tempPosValor + "];\n"
             self.ref = tempValor
@@ -155,3 +160,40 @@ class Acceso_Arreglo(Nodo):
 
     def calcTam(self):
         return 0
+
+
+
+def crearFuncionAccesoVector(vector,simbolo):
+    codigo = ""
+    print("Accediendo a vector")
+    print(vector.accesoArreglo)
+
+    tempPosicionArr = generador.nuevoTemporal()
+    codigo += tempPosicionArr + " = P + " + str(simbolo.direccionRel) + ";\n"
+
+    tempPosArrHeap = generador.nuevoTemporal()
+    codigo += tempPosArrHeap + " = stack[(int)" + tempPosicionArr + "];\n"
+
+    etiInicio = [generador.nuevaEtiqueta()]
+    etiSalida = [generador.nuevaEtiqueta()]
+
+    vector.accesoArreglo[0].crearCodigo3d(ts)
+    codigo += vector.accesoArreglo[0].expresion
+
+    tempPosValor = generador.nuevoTemporal()
+    tempValor = generador.nuevoTemporal()
+    tempElemRecorridos = generador.nuevoTemporal()
+
+    codigo += tempPosValor + " = " + tempPosArrHeap + " + 1;\n"
+    codigo += tempElemRecorridos + " = 0;\n"
+    codigo += generador.soltarEtiqueta(etiInicio)
+    codigo += "if (" + str(vector.accesoArreglo[0].ref) + " == " + tempElemRecorridos + ") " + generador.generarGoto(etiSalida[0])
+    codigo += tempPosValor + " = heap[(int)" + tempPosValor + "];\n"
+    codigo += tempPosValor + " = " + tempPosValor + " + 1;\n"
+    codigo += tempElemRecorridos + " = " + tempElemRecorridos + " + 1;\n"
+    codigo += generador.generarGoto(etiInicio[0])
+    codigo += generador.soltarEtiqueta(etiSalida)
+
+    codigo += tempPosValor + " = " + tempPosValor + " - 1;\n"
+    codigo += tempValor + " = heap[(int)" + tempPosValor + "];\n"
+    #self.ref = tempValor

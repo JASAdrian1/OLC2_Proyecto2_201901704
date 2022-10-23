@@ -31,6 +31,8 @@ from Compilador.Expresiones.acceso_arreglo import Acceso_Arreglo
 from Compilador.Expresiones.len_arreglo import Len_Arreglo
 from Compilador.Instrucciones.Estructuras.inicializacion_vector import Inicializacion_Vector
 from Compilador.Instrucciones.Estructuras.declaracion_vector import Declaracion_Vector
+from Compilador.Instrucciones.Estructuras.push_vector import Push_Vector
+from Compilador.Instrucciones.Estructuras.insert_vector import Insert_Vector
 
 from Compilador.Instrucciones.println import Println
 
@@ -494,10 +496,14 @@ def p_declaracion_vector(t):
 def p_push_en_vector(t):
     ''' push_vector : ID PUNTO PUSH PARA expresion PARC
     '''
+    t[0] = Push_Vector(t.slice[0],getNoNodo(),t[1],t[5],t.lexer.lineno,1)
+    return t
 
 def p_insertar_en_vector(t):
     ''' insertar_en_vector : ID PUNTO INSERT PARA expresion COMA expresion PARC
     '''
+    t[0] = Insert_Vector(t.slice[0],getNoNodo(),t[1],t[5],t[7],t.lexer.lineno,1)
+    return t
 
 def p_remove_vector(t):
     ''' remove_vector : ID PUNTO REMOVE PARA expresion PARC

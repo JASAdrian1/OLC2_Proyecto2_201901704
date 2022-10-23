@@ -64,7 +64,6 @@ class Println(Nodo):
         print("--",valor)
         print("--",valor.tipo.tipo_enum)
         if valor.tipo.tipo_enum == tipo.ARRAY or valor.tipo.tipo_enum == tipo.VEC:
-            valor.tipo.tipo_enum = valor.tipo.tipoElementos.tipo_enum
             tipoValor = valor.tipo.tipoElementos.tipo_enum
             print("GGGGGG ",valor.tipo.tipo_enum)
         else:
