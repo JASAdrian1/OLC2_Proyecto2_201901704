@@ -63,7 +63,7 @@ class Len_Arreglo(Nodo):
             self.expresion += "if (" + tempPosValor + " == -1) " + generador.generarGoto(etiSalida[0])  # Si la posicion del siguiente valor es -1 significa que es el final del vector
             self.expresion += tempPosValor + " = " + tempPosValor + " + 1;\n"
             self.expresion += tempPosValor + " = heap[(int)" + tempPosValor + "];\n"
-            self.expresion += "if (" + tempPosValor + " == -0) " + generador.generarGoto(etiSalida[0])  # Si la direccion del siguiente es 0 tambien indica la finalizacion del arreglo
+            self.expresion += "if (" + tempPosValor + " == 0) " + generador.generarGoto(etiSalida[0])  # Si la direccion del siguiente es 0 tambien indica la finalizacion del arreglo
             self.expresion += tempLongitud + " = " + tempLongitud + " + 1;\n"
             self.expresion += generador.generarGoto(etiInicio[0])
 

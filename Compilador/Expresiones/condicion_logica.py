@@ -50,9 +50,11 @@ class Condicion_Logica(Nodo):
                 self.etiF.append(generador.nuevaEtiqueta())
                 if self.exp1 == "true":
                     self.expresion += generador.generarGoto(self.etiV[0])
+                    self.ref = 1
                 elif self.exp1 == "false":
                     #print("HAHAHAH")
                     self.expresion += generador.generarGoto(self.etiF[0])
+                    self.ref = 0
 
         print(self.expresion)
         return self.expresion

@@ -34,6 +34,7 @@ from Compilador.Instrucciones.Estructuras.declaracion_vector import Declaracion_
 from Compilador.Instrucciones.Estructuras.push_vector import Push_Vector
 from Compilador.Instrucciones.Estructuras.insert_vector import Insert_Vector
 from Compilador.Instrucciones.Estructuras.capacity_vector import Capacity_Vector
+from Compilador.Instrucciones.Estructuras.remove_vector import Remove_Vector
 from Compilador.Instrucciones.println import Println
 
 
@@ -508,6 +509,8 @@ def p_insertar_en_vector(t):
 def p_remove_vector(t):
     ''' remove_vector : ID PUNTO REMOVE PARA expresion PARC
     '''
+    t[0] = Remove_Vector(t.slice[0],getNoNodo(),t[1],t[5],t.lexer.lineno,1)
+    return t
 
 
 # -------------------------FUNCIONES NATIVAS--------------------------------------
@@ -895,6 +898,8 @@ def p_capacity_vector(t):
 def p_remove_vector_expresion(t):
     ''' expresion : expresion PUNTO REMOVE PARA expresion PARC
     '''
+    t[0] = Remove_Vector(t.slice[0],getNoNodo(),t[1],t[5],t.lexer.lineno,1)
+    return t
 
 
 def p_llamada_funcion_expresion(t):
