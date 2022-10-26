@@ -68,9 +68,11 @@ class Funcion(Nodo):
             exp_instruccion = instruccion.crearCodigo3d(self.entorno)
             self.expresion += exp_instruccion
 
-        self.expresion += ";\n"
+
         if self.id == "main" :
             self.expresion += "return 0;\n"
+        else:
+            self.expresion += ";\n"
         self.expresion += "}\n"
         return self.expresion
 

@@ -1,4 +1,6 @@
+from Compilador import generador
 from Compilador.Interfaces.nodo import Nodo
+from Compilador.TablaSimbolo.tipo import tipo, Tipo
 from Compilador.generador import nuevoTemporal
 
 
@@ -16,14 +18,42 @@ class Aritmetica(Nodo):
         if self.expu is False:
             self.exp1.crearCodigo3d(ts)
             self.exp2.crearCodigo3d(ts)
+            tipoVar = self.exp1.tipo
             if len(self.exp1.expresion) >1:
                 self.expresion += self.exp1.expresion
             if len(self.exp2.expresion) >1:
                 self.expresion += self.exp2.expresion
             self.ref = nuevoTemporal()
             signo = " "+self.signo+" "  #variable creada unicamente para agregar espacios al signo
-            if self.signo == "+" or self.signo == "-" or self.signo == "*" or self.signo == "/" or self.signo == "^":
-                self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + signo + str(self.exp2.ref) + ";\n"
+            print("TTTT ",self.tipo)
+            print(self.exp1.tipo.tipo_enum)
+            print(self.exp2.tipo.tipo_enum)
+            if tipoVar.tipo_enum != tipo.STR and tipoVar.tipo_enum != tipo.STRING:
+                if self.signo == "+" or self.signo == "-" or self.signo == "*" or self.signo == "/" or self.signo == "^":
+                    self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + signo + str(self.exp2.ref) + ";\n"
+            else:
+                tempPosExp1 = generador.nuevoTemporal()
+                tempPosExp2 = generador.nuevoTemporal()
+
+                etiSalida = [generador.nuevaEtiqueta()]
+                etiInicio = [generador.nuevaEtiqueta()]
+
+                self.expresion += tempPosExp1 + " = " + str(self.exp1.ref) + ";\n"
+                self.expresion += tempPosExp2 + " = heap[(int)" + tempPosExp1 + "];\n"
+
+                print("ssssss")
+                print(self.exp1.ref)
+                #simboloExp1 = ts.get(self.exp1.pos)
+                self.expresion += generador.soltarEtiqueta(etiInicio)
+                self.expresion += "if(" + tempPosExp2 + " == -1)" + generador.generarGoto(etiSalida[0])
+                self.expresion += tempPosExp1 + " = " + tempPosExp1 + "+ 1;\n"
+                self.expresion += tempPosExp2 + " = heap[(int)" + tempPosExp1 + "];\n"
+                self.expresion += generador.generarGoto(etiInicio[0])
+
+                self.expresion += generador.soltarEtiqueta(etiSalida)
+                self.expresion += "heap[(int)" + tempPosExp1 + "] = " + str(self.exp2.ref) + ";\n"
+                self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + ";\n"
+
 
             #***ASIGNACION DE TIPO PROVISIONAL (FALTA QUE REALIZAR LA VALIDACION QUE LOS TIPOS DE LAS DOS EXPRESIONES COINCIDAN)
             self.tipo = self.exp1.tipo
