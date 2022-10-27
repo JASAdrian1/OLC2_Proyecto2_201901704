@@ -9,6 +9,7 @@ from Compilador.Expresiones.condicion import Condicion
 from Compilador.Expresiones.condicion_relacional import Condicion_Relacional
 from Compilador.Expresiones.condicion_logica import Condicion_Logica
 from Compilador.Expresiones.identificador import Identificador
+from Compilador.Expresiones.absoluto import Absoluto
 from Compilador.Instrucciones.sentencia_if import Sentencia_If
 from Compilador.Instrucciones.declaracion import Declaracion
 from Compilador.Instrucciones.asignacion import Asignacion
@@ -852,6 +853,8 @@ def p_expresion_id(t):
 def p_expresion_absoluto(t):
     ''' expresion : expresion PUNTO ABS PARA PARC
     '''
+    t[0] = Absoluto(t.slice[0],getNoNodo(),t[1],t.lexer.lineno,1)
+    return t
 
 def p_expresion_raiz(t):
     ''' expresion : expresion PUNTO SQRT PARA PARC

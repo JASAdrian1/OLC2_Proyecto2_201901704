@@ -118,7 +118,6 @@ class Acceso_Arreglo(Nodo):
                 print("22222222222 ",self.id)
                 self.expresion += "//***ERROR***Las dimension del acceso no coinciden con la declaracion del arreglo"
 
-
         #*******EN DADO CASO SE ESTE ACCIENDO A UN VECTOR SE EJECUTA EL SIGUIENTE CODIGO
 
         elif tipo.VEC == simbolo.tipo_dato.tipo_enum:

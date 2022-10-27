@@ -1,6 +1,6 @@
 from Compilador import generador
 from Compilador.Interfaces.nodo import Nodo
-from Compilador.TablaSimbolo.tipo import tipo
+from Compilador.TablaSimbolo.tipo import tipo, Tipo
 
 
 class Capacity_Vector(Nodo):
@@ -16,6 +16,7 @@ class Capacity_Vector(Nodo):
     def crearCodigo3d(self,ts):
         self.expresion += "//capacity\n"
         simbolo = ts.get(self.id.id)
+        self.tipo = Tipo("I64");
         print(simbolo)
         print(self.id,"!!!!!!")
 
