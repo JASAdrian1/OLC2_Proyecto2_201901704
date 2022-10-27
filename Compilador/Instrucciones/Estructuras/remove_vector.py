@@ -18,6 +18,7 @@ class Remove_Vector(Nodo):
 
     def crearCodigo3d(self,ts):
         self.expresion += "//remove vector\n"
+        print(self.posicion)
 
         if isinstance(self.id,Identificador):
             self.id = self.id.id
@@ -43,6 +44,7 @@ class Remove_Vector(Nodo):
         tempPosValor = generador.nuevoTemporal()
         tempElemRecorridos = generador.nuevoTemporal()
         tempAnteriorVal = generador.nuevoTemporal()
+        tempValRef = generador.nuevoTemporal()
 
         self.expresion += tempPosValor + " = " + tempPosArrHeap + " + 1;\n"
         self.expresion += tempAnteriorVal + " = " + tempPosValor + ";\n"
@@ -51,6 +53,7 @@ class Remove_Vector(Nodo):
         self.expresion += "if (" + tempPosRemove + " != -1)" + generador.generarGoto(etiInicio[0])
         tempValorSiguiente = generador.nuevoTemporal()
         self.expresion += tempValorSiguiente + " = " + tempPosArrHeap + " + 1;\n"
+        self.expresion += tempValRef + " = heap[(int)"+tempPosArrHeap + "];\n"
         #self.expresion += tempValorSiguiente + " = " +tempValorSiguiente + " + 1;\n"
         self.expresion += tempValorSiguiente + " = " + "heap[(int)" + tempValorSiguiente + "];\n"
         self.expresion += "stack[(int)" + tempPosicionArr + "] = " + tempValorSiguiente + ";\n"
@@ -68,13 +71,11 @@ class Remove_Vector(Nodo):
         # Se almacena en nuevo temporal el valor del siguiente elemento del vector antes de ser modificado
         tempSiguienteVal = generador.nuevoTemporal()
         tempValorActual = generador.nuevoTemporal()
-        tempValRef = generador.nuevoTemporal()
 
         self.expresion += tempValorActual + " = heap[(int)" + tempAnteriorVal + "];\n"
         self.expresion += tempSiguienteVal + " = " + tempValorActual + " + 1;\n"
         self.expresion += tempSiguienteVal + " = heap[(int)" + tempSiguienteVal + "];\n"
-        self.expresion += tempValRef + " = heap[(int)" + tempSiguienteVal + "];\n"
-        self.ref = tempValRef
+        self.expresion += tempValRef + " = heap[(int)" + tempSiguienteVal + "];\n"      #Se guarda como referencia el valor que se saca del vector
         self.expresion += tempSiguienteVal + " = " + tempSiguienteVal + " + 1;\n"
         self.expresion += tempSiguienteVal + " = heap[(int)" + tempSiguienteVal + "];\n"
         #self.expresion += tempSiguienteVal + " = " + tempSiguienteVal + " + 1;\n"
@@ -83,6 +84,9 @@ class Remove_Vector(Nodo):
         self.expresion += "heap[(int)" + tempValorActual + "] = "+ tempSiguienteVal +";\n"
 
         self.expresion += generador.soltarEtiqueta(etiSalida2)
+
+
+        self.ref = tempValRef
         return self.expresion
 
 

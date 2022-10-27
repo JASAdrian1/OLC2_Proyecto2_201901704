@@ -8,6 +8,7 @@ from Compilador.Entorno import entorno
 from Compilador.Entorno.entorno import Entorno,mostrarSimbolos,tabla_simbolos_global,mostrarTablaGlobal
 from Compilador import generador
 from Compilador.Instrucciones import println
+from Compilador.TablaSimbolo.tipo import Tipo
 
 
 class Ventana:
@@ -87,6 +88,100 @@ class Ventana:
 
 
 
+    def crearReporte(self, tipoReporte):
+        print(tipoReporte)
+        if tipoReporte == "Reporte de simbolos":
+            f = open("tablaSimbolos.html","w")
+            f.write('<!DOCTYPE html>\n<html>\n<head><title>Tabla de simbolos</title>\n</head>\n<body>')
+            f.write("<h1>Lista de simbolos</h1>")
+            f.write('<table style="border:solid">')
+            f.write('<tr>')
+            f.write('<th> ID </th>')
+            f.write('<th> Tipo simbolo </th>')
+            f.write('<th> Tipo de dato </th>')
+            f.write('<th> Fila </th>')
+            f.write('<th> Columna </th>')
+            f.write('</tr>')
+            for simbolo in entorno.tabla_simbolos_global:
+                #if type(simbolo.tipo_dato) == str:
+                tipoSimbolo = simbolo.tipo_dato
+                if tipoSimbolo is None:
+                    tipoSimbolo = "VOID"
+                elif isinstance(tipoSimbolo,Tipo):
+                    tipoSimbolo = simbolo.tipo_dato.tipo_string
+                #else:
+                #    tipoSimbolo = simbolo.tipo_dato.tipo
+                if type(simbolo.id) is list:
+                    for id in simbolo.id:
+                        f.write('<tr>')
+                        f.write('<td>')
+                        f.write(id)
+                        f.write('</td>')
+                        f.write('<td>')
+                        f.write(simbolo.tipoVarFun)
+                        f.write('</td>')
+                        f.write('<td>')
+                        f.write(tipoSimbolo)
+                        f.write('</td>')
+                        f.write('<td>')
+                        f.write(str(simbolo.linea))
+                        f.write('</td>')
+                        f.write('<td>')
+                        f.write(str(simbolo.columna))
+                        f.write('</td>')
+                        f.write('</tr>')
+                else:
+                    f.write('<tr>')
+                    f.write('<td>')
+                    f.write(simbolo.id)
+                    f.write('</td>')
+                    f.write('<td>')
+                    f.write(simbolo.tipo_simbolo)
+                    f.write('</td>')
+                    f.write('<td>')
+                    f.write(tipoSimbolo)
+                    f.write('</td>')
+                    f.write('<td>')
+                    f.write(str(simbolo.linea))
+                    f.write('</td>')
+                    f.write('<td>')
+                    f.write(str(simbolo.columna))
+                    f.write('</td>')
+                    f.write('</tr>')
+            f.write('</table>')
+            f.write('</body>')
+        else:
+            f = open("tablaErrores.html", "w")
+            f.write('<!DOCTYPE html>\n<html>\n<head><title>Tabla de simbolos</title>\n</head>\n<body>')
+            f.write("<h1>Lista de errores</h1>")
+            f.write('<table style="border:solid">')
+            f.write('<tr>')
+            f.write('<th> No. </th>')
+            f.write('<th> Descripcion </th>')
+            f.write('<th> Linea </th>')
+            f.write('<th> Columna </th>')
+            f.write('</tr>')
+            noError = 0
+            for error in controlador.errs:
+                noError += 1
+                f.write('<tr>')
+                f.write('<td>')
+                f.write(str(noError))
+                f.write('</td>')
+                f.write('<td>')
+                f.write(error.descripcion)
+                f.write('</td>')
+                f.write('<td>')
+                f.write(str(error.fila))
+                f.write('</td>')
+                f.write('<td>')
+                f.write(str(error.columna))
+                f.write('</td>')
+                f.write('</tr>')
+            f.write('</table>')
+            f.write('</body>')
+            f.write('</html>')
+            f.close()
 
 
 

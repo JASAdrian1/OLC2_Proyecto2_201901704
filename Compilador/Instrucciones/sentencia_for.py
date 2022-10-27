@@ -22,12 +22,12 @@ class Sentencia_for(Nodo):
         self.entorno.crearListaNombresEntorno()
 
         if self.recorrido.objetoARecorrer is None:
-            nuevoSimbolo = Simbolo(self.recorrido.id.id,Tipo("I64"),"variable",1,self.entorno.nombre,self.entorno.getUltimaPosStack(),self.recorrido.id.posHeap)
+            nuevoSimbolo = Simbolo(self.recorrido.id.id,Tipo("I64"),"variable",1,self.entorno.nombre,self.entorno.getUltimaPosStack(),self.recorrido.id.posHeap,self.linea,self.columna)
             self.entorno.put(self.recorrido.id.id,nuevoSimbolo)
             entorno.tabla_simbolos_global.append(nuevoSimbolo)
         else:
             nuevoSimbolo = Simbolo(self.recorrido.id.id, self.recorrido.objetoARecorrer.tipo_dato, "variable", 1, self.entorno.nombre,
-                                   self.entorno.getUltimaPosStack(), self.recorrido.id.posHeap)
+                                   self.entorno.getUltimaPosStack(), self.recorrido.id.posHeap,self.linea,self.columna)
             self.entorno.put(self.recorrido.id.id, nuevoSimbolo)
             entorno.tabla_simbolos_global.append(nuevoSimbolo)
 

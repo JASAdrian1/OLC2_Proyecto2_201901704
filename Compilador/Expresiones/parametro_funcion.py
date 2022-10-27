@@ -18,11 +18,11 @@ class Parametro_funcion(Nodo):
     def crearTabla(self,ts):
         print("TIPO (parametro funcion):",self.tipoParametro.tipo_enum)
         if self.tipoParametro.tipo_enum != tipo.ARRAY and self.tipoParametro.tipo_enum != tipo.VEC:
-            nuevoSimbolo = Simbolo(self.id,self.tipoParametro,"parametro",1,ts.nombre,ts.getUltimaPosStack(),-1)
+            nuevoSimbolo = Simbolo(self.id,self.tipoParametro,"parametro",1,ts.nombre,ts.getUltimaPosStack(),-1,self.linea,self.columna)
             ts.put(self.id, nuevoSimbolo)
             entorno.tabla_simbolos_global.append(nuevoSimbolo)
         else:
-            nuevoSimbolo = Simbolo(self.id, self.tipoParametro, "parametro", 1, ts.nombre, ts.getUltimaPosStack(), -1)
+            nuevoSimbolo = Simbolo(self.id, self.tipoParametro, "parametro", 1, ts.nombre, ts.getUltimaPosStack(), -1,self.linea,self.columna)
             print("DIMENSIONES: ",self.tipoParametro.dimensiones)
             print(self.tipoParametro.tipo_enum)
             print(nuevoSimbolo.tipo_elementos)

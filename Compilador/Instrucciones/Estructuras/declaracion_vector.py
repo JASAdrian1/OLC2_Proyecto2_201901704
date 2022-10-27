@@ -27,7 +27,7 @@ class Declaracion_Vector(Nodo):
                         else:
                             tipoElementos = self.tipoElementos
                         posHeap = entorno.posHeap
-                        nuevoSimbolo = Simbolo(id, self.tipo, "variable", 1, ts.nombre, ts.getUltimaPosStack(), posHeap)
+                        nuevoSimbolo = Simbolo(id, self.tipo, "variable", 1, ts.nombre, ts.getUltimaPosStack(), posHeap,self.linea,self.columna)
                         nuevoSimbolo.tipo_elementos = tipoElementos
                         ts.put(id, nuevoSimbolo)
                         entorno.tabla_simbolos_global.append(nuevoSimbolo)

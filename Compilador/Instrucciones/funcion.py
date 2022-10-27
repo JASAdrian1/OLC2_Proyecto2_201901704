@@ -20,7 +20,8 @@ class Funcion(Nodo):
         self.entorno.crearListaNombresEntorno()
         self.entorno.funcionEnEjecucion = self.id
 
-        nuevaFuncion = Simbolo(self.id,self.tipoFuncion,self.tipoSimbolo,0,ts.nombre,-1,entorno.getHeapLibre())
+        nuevaFuncion = Simbolo(self.id,self.tipoFuncion,self.tipoSimbolo,0,ts.nombre,-1,entorno.getHeapLibre(),self.linea,self.columna)
+        nuevaFuncion.parametros = self.listaParametros
         print("id: ",self.id)
         self.entorno.put(self.id,nuevaFuncion)
         entorno.tabla_simbolos_global.append(nuevaFuncion)

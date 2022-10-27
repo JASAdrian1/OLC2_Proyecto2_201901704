@@ -25,7 +25,7 @@ class Declaracion_arreglo(Nodo):
         dimensiones.reverse()
         for id in self.listaid:
             posHeap = entorno.posHeap
-            nuevoSimbolo = Simbolo(id,self.tipo,"variable",1,ts.nombre,ts.getUltimaPosStack(),posHeap,dimensiones,self.tipoElementos)
+            nuevoSimbolo = Simbolo(id,self.tipo,"variable",1,ts.nombre,ts.getUltimaPosStack(),posHeap,self.linea,self.columna,dimensiones,self.tipoElementos)
             ts.put(id,nuevoSimbolo)
             entorno.tabla_simbolos_global.append(nuevoSimbolo)
 

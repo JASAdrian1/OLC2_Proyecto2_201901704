@@ -1,5 +1,6 @@
 from Compilador.Entorno import entorno
 from Compilador.Entorno.simbolo import Simbolo
+from Compilador.Expresiones.llamada_funcion_exp import Llamada_funcion_exp
 from Compilador.Interfaces.nodo import Nodo
 from Compilador import generador
 from Compilador.TablaSimbolo.tipo import tipo
@@ -27,7 +28,7 @@ class Declaracion(Nodo):
             print(self.tipo.tipo_enum)
             if self.tipo.tipo_enum == tipo.I64 or self.tipo.tipo_enum == tipo.F64 or self.tipo.tipo_enum == tipo.STR \
                     or self.tipo.tipo_enum == tipo.STRING or self.tipo.tipo_enum == tipo.CHAR or self.tipo.tipo_enum == tipo.BOOL:
-                nuevoSimbolo = Simbolo(id, self.tipo,self.tipoSimbolo,1, ts.nombre, ts.getUltimaPosStack(),self.valor.posHeap)
+                nuevoSimbolo = Simbolo(id, self.tipo,self.tipoSimbolo,1, ts.nombre, ts.getUltimaPosStack(),self.valor.posHeap,self.fila,self.columna)
                 ts.put(id, nuevoSimbolo)
                 entorno.tabla_simbolos_global.append(nuevoSimbolo)
             entorno.desplazamiento += 1     #<---Verificar si esta variable se está usando xd
@@ -42,7 +43,18 @@ class Declaracion(Nodo):
                     or self.tipo.tipo_enum == tipo.STRING or self.tipo.tipo_enum == tipo.CHAR:
                 self.expresion += tempValor + " = " + str(self.valor.ref)+";\n"
             elif self.tipo.tipo_enum == tipo.BOOL:
-                print("-",self.valor.exp1)
+                #print("-",self.valor.exp1)
+                print(self.valor.ref)
+                etiSalida = [generador.nuevaEtiqueta()]
+                if isinstance(self.valor,Llamada_funcion_exp):
+                    self.expresion += tempValor + " = " + self.valor.ref + ";\n"
+                else:
+                    self.expresion += generador.soltarEtiqueta(self.valor.etiV)
+                    self.expresion += tempValor + " = 1;\n"
+                    self.expresion += generador.generarGoto(etiSalida[0])
+                    self.expresion += generador.soltarEtiqueta(self.valor.etiF)
+                    self.expresion += tempValor + " = 0;\n"
+                    self.expresion += generador.soltarEtiqueta(etiSalida)
 
             #Se genera el temporal y la posicion del stack donde se guardara la varible
             tempPosVariable = generador.nuevoTemporal()
