@@ -22,7 +22,7 @@ class Sentencia_Return(Nodo):
                 tipo_return = simboloFuncion.tipo_dato.tipo_enum
                 if tipo_return == tipo.I64 or tipo_return == tipo.F64 or tipo_return == tipo.BOOL or tipo_return == tipo.CHAR or tipo_return == tipo.USIZE:
                     size = 1
-                simboloReturn = Simbolo("return",simboloFuncion.tipo_dato,"variable",size,ts.nombre,0,-1)
+                simboloReturn = Simbolo("return",simboloFuncion.tipo_dato,"variable",size,ts.nombre,0,-1,self.linea,self.columna)
                 ts.put("return", simboloReturn)
                 entorno.tabla_simbolos_global.append(simboloReturn)
 

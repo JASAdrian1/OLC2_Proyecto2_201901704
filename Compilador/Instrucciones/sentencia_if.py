@@ -1,11 +1,15 @@
 from Compilador import generador
 from Compilador.Entorno import entorno
 from Compilador.Entorno.entorno import Entorno
+from Compilador.Entorno.error import Error
+from Compilador.Expresiones.primitivo import Primitivo
+from Compilador.Instrucciones.println import Println
 from Compilador.Interfaces.nodo import Nodo
+from Compilador.TablaSimbolo.tipo import tipo, Tipo
 
 
 class Sentencia_If(Nodo):
-    def __init__(self,token, idnodo, condicion, instruccionesif,instruccioneselse):
+    def __init__(self,token, idnodo, condicion, instruccionesif,instruccioneselse,linea,columna):
         super().__init__(token,idnodo)
         self.condicion = condicion
         self.instruccionesif = instruccionesif
@@ -13,6 +17,8 @@ class Sentencia_If(Nodo):
         self.etiSalida = []
         self.entornoIf = Entorno("if")
         self.entornoElse = Entorno("else")
+        self.linea = linea
+        self.columna = columna
 
     def crearTabla(self,ts):
         self.entornoIf.entornoAnterior = ts
@@ -34,6 +40,18 @@ class Sentencia_If(Nodo):
         self.etiSalida = []
         self.etiSalida.append(generador.nuevaEtiqueta())  # SE GENERA UNA ETIQUETA PARA SALIR DE LA INSTRUCCION IF
 
+        print(self.condicion.tipo.tipo_enum)
+        if self.condicion.tipo.tipo_enum != tipo.BOOL:
+            entorno.lista_errores.append(Error("SEMANTICO", "La condicion del if no es de tipo booleano", 1, 1))
+            error = Primitivo(self.token, -1,
+                              "ERROR.La condicion del if no es de tipo booleano", "STRING", 0,
+                              0)
+            impresionError = Println(self.token, -1, error, None, self.linea, self.columna)
+            impresionError.crearCodigo3d(ts)
+            self.expresion += impresionError.expresion
+            self.tipo = Tipo("ERROR")
+            return self.expresion
+
         self.expresion += self.condicion.crearCodigo3d(ts)
         self.expresion += generador.soltarEtiqueta(self.condicion.etiV) #SE MUESTRAN LAS ETIQUETAS VERDADERAS
 
@@ -46,6 +64,17 @@ class Sentencia_If(Nodo):
             exp_instruccion = instruccion.crearCodigo3d(self.entornoIf)
             if exp_instruccion == "break":
                 print(ts.nombre)
+                print(ts.listaEtiquetas)
+                if len(ts.listaEtiquetas) == 0:
+                    entorno.lista_errores.append(Error("SEMANTICO", "El break no se encuentra dentro de un ciclo", 1, 1))
+                    error = Primitivo(self.token, -1,
+                                      "ERROR.El break no se encuentra dentro de un ciclo", "STRING", 0,
+                                      0)
+                    impresionError = Println(self.token, -1, error, None, self.linea, self.columna)
+                    impresionError.crearCodigo3d(ts)
+                    self.expresion = impresionError.expresion
+                    self.tipo = Tipo("ERROR")
+                    return self.expresion
                 self.expresion += generador.generarGoto(ts.listaEtiquetas[-1])      #Se insertas las etiquetas en listaEtiquetas desde las instrucciones de los bucles
             elif exp_instruccion == "continue":
                 self.expresion += generador.generarGoto(ts.listaEtiquetas[-2])

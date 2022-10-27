@@ -162,7 +162,7 @@ class Ventana:
             f.write('<th> Columna </th>')
             f.write('</tr>')
             noError = 0
-            for error in controlador.errs:
+            for error in entorno.lista_errores:
                 noError += 1
                 f.write('<tr>')
                 f.write('<td>')

@@ -37,7 +37,7 @@ class Declaracion_Vector(Nodo):
                         entorno.posHeap += espacioOcupado
             else:
                 posHeap = entorno.posHeap
-                nuevoSimbolo = Simbolo(id, self.tipo, "variable", 1, ts.nombre, ts.getUltimaPosStack(), posHeap)
+                nuevoSimbolo = Simbolo(id, self.tipo, "variable", 1, ts.nombre, ts.getUltimaPosStack(), posHeap,self.linea,self.columna)
                 nuevoSimbolo.tipo_elementos = self.tipoElementos
                 ts.put(id, nuevoSimbolo)
                 entorno.tabla_simbolos_global.append(nuevoSimbolo)

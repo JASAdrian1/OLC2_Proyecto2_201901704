@@ -35,6 +35,7 @@ from Compilador.Instrucciones.Estructuras.push_vector import Push_Vector
 from Compilador.Instrucciones.Estructuras.insert_vector import Insert_Vector
 from Compilador.Instrucciones.Estructuras.capacity_vector import Capacity_Vector
 from Compilador.Instrucciones.Estructuras.remove_vector import Remove_Vector
+from Compilador.Expresiones.casteo import Casteo
 from Compilador.Instrucciones.println import Println
 
 
@@ -547,11 +548,11 @@ def p_sentencia_if(t):
                     | IF expresion LLAVEA instrucciones LLAVEC ELSE LLAVEA instrucciones LLAVEC
     '''
     if len(t) == 6:
-        t[0] = Sentencia_If(t.slice[0],getNoNodo(),t[2],t[4],None)
+        t[0] = Sentencia_If(t.slice[0],getNoNodo(),t[2],t[4],None,t.lexer.lineno,1)
     elif len(t) == 8:
-        t[0] = Sentencia_If(t.slice[0],getNoNodo(),t[2],t[4],[t[7]])
+        t[0] = Sentencia_If(t.slice[0],getNoNodo(),t[2],t[4],[t[7]],t.lexer.lineno,1)
     elif len(t) == 10:
-        t[0] = Sentencia_If(t.slice[0],getNoNodo(),t[2],t[4],t[8])
+        t[0] = Sentencia_If(t.slice[0],getNoNodo(),t[2],t[4],t[8],t.lexer.lineno,1)
     return t
 
 
@@ -743,7 +744,7 @@ def p_expresion(t):  # ----PENDIENTE------
     '''expresion : PARA expresion AS tipo PARC
     '''
     #arreglar problema de gramatica para PARA expresion PARA con la produccion condicion
-    t[0] = t[2]
+    t[0] = Casteo(t.slice[0],getNoNodo(),t[2],t[4],t.lexer.lineno,1)
     return t
 
 
@@ -759,9 +760,9 @@ def p_expresion_aritmeticas(t):
                 | MENOS expresion %prec UMENOS
     '''
     if len(t) == 4:
-        t[0] = Aritmetica(t.slice[0],getNoNodo(),t[1],t[3],False, t[2])
+        t[0] = Aritmetica(t.slice[0],getNoNodo(),t[1],t[3],False, t[2],t.lexer.lineno,1)
     elif len(t) == 3:
-        t[0] = Aritmetica(t.slice[0],getNoNodo(),t[2],None,True,t[1])
+        t[0] = Aritmetica(t.slice[0],getNoNodo(),t[2],None,True,t[1],t.lexer.lineno,1)
     return t
 
 

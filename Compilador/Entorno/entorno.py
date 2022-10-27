@@ -3,6 +3,7 @@ from Compilador.Expresiones.identificador import Identificador
 desplazamiento = 0
 posHeap = 0
 tabla_simbolos_global = []
+lista_errores = []
 
 class Entorno:
     def __init__(self, nombre, entornoAnterior=None):

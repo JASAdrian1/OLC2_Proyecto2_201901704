@@ -25,6 +25,7 @@ class Acceso_Arreglo(Nodo):
         print("Tipo simbolo: ",simbolo.tipo_dato.tipo_enum)
         print(self.id)
         if simbolo.tipo_dato.tipo_enum == tipo.ARRAY:
+            self.expresion += "//Acceso arreglo \n"
             print("FF",simbolo, " -- ",self.id)
             print(simbolo.tipo_dato)
             print(simbolo.tipo_elementos)
@@ -121,6 +122,7 @@ class Acceso_Arreglo(Nodo):
         #*******EN DADO CASO SE ESTE ACCIENDO A UN VECTOR SE EJECUTA EL SIGUIENTE CODIGO
 
         elif tipo.VEC == simbolo.tipo_dato.tipo_enum:
+            self.expresion += "//Acceso vector \n"
             print("Accediendo a vector")
             print(self.accesoArreglo)
 

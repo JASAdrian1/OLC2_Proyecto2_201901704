@@ -13,6 +13,8 @@ class Primitivo(Nodo):
         self.expresion = ""
         self.posHeap = -1
         self.tipo = Tipo(tipoValor)
+        self.fila = fila
+        self.columna = columna
         print("///",self.tipo)
 
 

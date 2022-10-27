@@ -1,11 +1,15 @@
 from Compilador import generador
+from Compilador.Entorno import entorno
+from Compilador.Entorno.error import Error
+from Compilador.Expresiones.primitivo import Primitivo
+from Compilador.Instrucciones.println import Println
 from Compilador.Interfaces.nodo import Nodo
 from Compilador.TablaSimbolo.tipo import tipo, Tipo
 from Compilador.generador import nuevoTemporal
 
 
 class Aritmetica(Nodo):
-    def __init__(self, token, idNodo, exp1, exp2, expu, signo):
+    def __init__(self, token, idNodo, exp1, exp2, expu, signo,linea,columna):
         super().__init__(token,idNodo)
         self.exp1 = exp1
         self.exp2 = exp2
@@ -13,6 +17,8 @@ class Aritmetica(Nodo):
         print("Exp1 tipo: ",exp1.tipo)
         self.expu = expu
         self.signo = signo
+        self.linea =linea
+        self.columna = columna
 
     def crearCodigo3d(self,ts):
         if self.expu is False:
@@ -28,9 +34,34 @@ class Aritmetica(Nodo):
             print("TTTT ",self.tipo)
             print(self.exp1.tipo.tipo_enum)
             print(self.exp2.tipo.tipo_enum)
+            if self.exp1.tipo.tipo_enum != self.exp2.tipo.tipo_enum:
+                entorno.lista_errores.append(Error("SEMANTICO","Operacion aritmetica entre dos operadores no validos",1,1))
+                print("Error encontrado en expresiones aritmeticas. Linea: "+ str(self.linea))
+                error = Primitivo(self.token, -1, "ERROR. Los tipos de los operadores no coinciden en la operacion aritmetica"
+                                                  " Linea: "+ str(self.linea), "STRING",self.linea,self.columna)
+                impresionError = Println(self.token, -1, error, None, 0, 0)
+                impresionError.crearCodigo3d(ts)
+                self.expresion += impresionError.expresion
+                self.tipo = Tipo("ERROR")
+                return self.expresion
             if tipoVar.tipo_enum != tipo.STR and tipoVar.tipo_enum != tipo.STRING:
                 if self.signo == "+" or self.signo == "-" or self.signo == "*" or self.signo == "/" or self.signo == "^":
-                    self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + signo + str(self.exp2.ref) + ";\n"
+                    if self.signo == "/":
+                        etiError = [generador.nuevaEtiqueta()]
+                        etiSalida = [generador.nuevaEtiqueta()]
+
+                        self.expresion += "if (" + str(self.exp2.ref) + " == 0)" + generador.generarGoto(etiError[0])
+                        self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + signo + str(self.exp2.ref) + ";\n"
+                        self.expresion += generador.generarGoto(etiSalida[0])
+                        self.expresion += generador.soltarEtiqueta(etiError)
+                        self.expresion += "//*ERROR*. Se ha dividido un valor dentro de 0\n"
+                        error = Primitivo(self.token,-1,"ERROR. Division entre 0","STRING",0,0)
+                        impresionError = Println(self.token,-1,error,None,0,0)
+                        impresionError.crearCodigo3d(ts)
+                        self.expresion += impresionError.expresion
+                        self.expresion += generador.soltarEtiqueta(etiSalida)
+                    else:
+                        self.expresion += str(self.ref) + " = " + str(self.exp1.ref) + signo + str(self.exp2.ref) + ";\n"
             else:
                 tempPosExp1 = generador.nuevoTemporal()
                 tempPosExp2 = generador.nuevoTemporal()

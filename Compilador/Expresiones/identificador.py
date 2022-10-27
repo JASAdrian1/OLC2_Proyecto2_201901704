@@ -1,4 +1,8 @@
 from Compilador import generador
+from Compilador.Entorno import entorno
+from Compilador.Entorno.error import Error
+from Compilador.Expresiones.primitivo import Primitivo
+from Compilador.Instrucciones.println import Println
 from Compilador.Interfaces.nodo import Nodo
 from Compilador.TablaSimbolo.tipo import Tipo
 
@@ -19,6 +23,16 @@ class Identificador(Nodo):
     def crearCodigo3d(self,ts):
         simbolo = ts.get(self.id,"variable")
         print(self.id)
+        if simbolo is None:
+            entorno.lista_errores.append(Error("SEMANTICO","La variable con el id "+self.id+"No existe",1,1))
+            error = Primitivo(self.token, -1,
+                              "ERROR.La variable con el id "+self.id+" no existe", "STRING", 0,
+                              0)
+            impresionError = Println(self.token, -1, error, None, self.linea, self.columna)
+            impresionError.crearCodigo3d(ts)
+            self.expresion += impresionError.expresion
+            self.tipo = Tipo("ERROR")
+            return self.expresion
         self.tipo = Tipo(simbolo.tipo_dato.tipo_string)
         #print("/*",self.tipo.tipo_string)
 
